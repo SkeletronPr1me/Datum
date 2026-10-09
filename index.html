@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DATUM - Daily Puzzle Suite</title>
+  <title>DATUM - Daily Logic Engine</title>
   <style>
     :root {
-      --win-blue: #0058ee;
+      --win-blue: #0055ea;
       --win-blue-dark: #003399;
       --win-bg: #ece9d8;
       --win-border-dark: #716f64;
@@ -32,7 +32,6 @@
       justify-content: center; align-items: center; position: relative;
     }
 
-    /* Vertical Shortcuts Bar */
     .desktop-shortcuts {
       position: absolute; top: 16px; left: 16px;
       display: flex; flex-direction: column; gap: 16px; z-index: 1;
@@ -40,17 +39,16 @@
 
     .icon {
       display: flex; flex-direction: column; align-items: center;
-      width: 75px; cursor: pointer; color: white;
+      width: 70px; cursor: pointer; color: white;
       text-shadow: 1px 1px 2px black; font-size: 11px; text-align: center;
-      padding: 6px; border-radius: 4px;
     }
 
-    .icon:hover { background: rgba(255, 255, 255, 0.2); }
-    .icon-img { font-size: 30px; margin-bottom: 4px; }
+    .icon:hover { filter: brightness(1.2); }
+    .icon-img { font-size: 32px; margin-bottom: 4px; }
 
     /* Main App Window */
     .window {
-      width: 720px; max-width: 95vw; background: var(--win-bg);
+      width: 700px; max-width: 95vw; background: var(--win-bg);
       border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
       box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
       display: flex; flex-direction: column; overflow: hidden; z-index: 10;
@@ -62,15 +60,13 @@
       color: white; font-weight: bold; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
     }
 
-    .title-bar-text { display: flex; align-items: center; gap: 6px; font-size: 12px; }
-
     .title-controls { display: flex; gap: 3px; }
 
     .win-btn {
       width: 21px; height: 21px; border: 1px solid #ffffff; border-radius: 3px;
       background: linear-gradient(180deg, #7fa3e2 0%, #3a70cb 50%, #1f479f 100%);
       color: white; font-weight: bold; font-size: 11px; line-height: 18px;
-      text-align: center; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+      text-align: center; cursor: pointer;
     }
 
     .win-btn.close {
@@ -90,7 +86,7 @@
 
     .window-body {
       padding: 12px; display: flex; flex-direction: column; gap: 12px;
-      max-height: 80vh; overflow-y: auto;
+      max-height: 80vh; overflow-y: auto; position: relative;
     }
 
     .tabs { display: flex; border-bottom: 1px solid var(--win-border-dark); gap: 2px; }
@@ -121,6 +117,7 @@
       border-radius: 3px; margin-bottom: 10px; line-height: 1.4;
     }
 
+    /* XP Controls */
     .btn {
       background: var(--xp-btn-gradient); border: 1px solid #7f9db9;
       border-radius: 3px; padding: 5px 16px; font-family: inherit;
@@ -135,154 +132,134 @@
       color: white; border-color: #1a5ca3; font-weight: bold;
     }
 
-    /* Game Controls */
+    /* 1. PINPOINT UI */
     .pinpoint-display { text-align: center; margin: 15px 0; }
-    .pinpoint-val { font-size: 24px; font-weight: bold; color: var(--win-blue-dark); }
-    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .slider-row label { width: 130px; font-weight: bold; }
-    input[type=range] { flex: 1; height: 6px; accent-color: var(--win-blue); }
+    .pinpoint-val { font-size: 22px; font-weight: bold; color: var(--win-blue-dark); }
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .slider-row label { width: 120px; font-weight: bold; }
+    input[type=range] { flex: 1; }
 
+    /* 2. OVERLAP UI */
     .overlap-board { display: flex; flex-direction: column; gap: 12px; align-items: center; }
     .card-deck {
       display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-      min-height: 48px; padding: 8px; width: 100%; background: #f5f5f5;
+      min-height: 48px; padding: 8px; width: 100%; background: #f0f0f0;
       border: 1px dashed #a0a0a0; border-radius: 4px;
     }
 
     .draggable-card {
       background: #ffffff; border: 1px solid #7f9db9; padding: 6px 12px;
-      border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.15); font-weight: bold;
+      border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-weight: bold;
     }
 
     .draggable-card:active { cursor: grabbing; }
 
     .venn-container {
       display: flex; justify-content: center; position: relative;
-      width: 100%; height: 220px; margin-top: 10px;
+      width: 100%; height: 210px; margin-top: 10px;
     }
 
     .drop-zone {
       border: 2px dashed #999; border-radius: 50%; position: absolute;
       display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      padding-top: 12px; transition: background 0.2s, border-color 0.2s;
+      padding-top: 15px; transition: background 0.2s;
     }
 
-    .drop-zone.drag-over { background: rgba(49, 106, 197, 0.2) !important; border-style: solid; border-color: var(--win-blue); }
-    .zone-a { width: 200px; height: 200px; left: 18%; background: rgba(255, 200, 200, 0.25); border-color: #d8432a; }
-    .zone-b { width: 200px; height: 200px; right: 18%; background: rgba(200, 200, 255, 0.25); border-color: #227bd6; }
+    .drop-zone.drag-over { background: rgba(49, 106, 197, 0.2) !important; border-style: solid; }
+    .zone-a { width: 190px; height: 190px; left: 18%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
+    .zone-b { width: 190px; height: 190px; right: 18%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
     .zone-both {
-      width: 120px; height: 160px; left: calc(50% - 60px); top: 20px;
-      border-radius: 40%; background: rgba(200, 255, 200, 0.35); border-color: var(--xp-green); z-index: 2;
+      width: 110px; height: 150px; left: calc(50% - 55px); top: 20px;
+      border-radius: 40%; background: rgba(200, 255, 200, 0.4); border-color: var(--xp-green); z-index: 2;
     }
 
-    .zone-label { font-weight: bold; font-size: 11px; pointer-events: none; text-align: center; }
-    .zone-items { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; pointer-events: none; }
-    .zone-items .draggable-card { font-size: 9px; padding: 2px 6px; }
+    .zone-label { font-weight: bold; font-size: 10px; pointer-events: none; text-align: center; }
+    .zone-items { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; width: 100%; align-items: center; }
+    .zone-items .draggable-card { font-size: 9px; padding: 2px 6px; width: 90%; text-align: center; }
 
+    /* 3. CHAIN UI */
     .chain-container { display: flex; flex-direction: column; gap: 8px; }
-    .chain-node { display: flex; align-items: center; gap: 8px; background: #f9f9f9; padding: 8px 12px; border: 1px solid #ccc; border-radius: 3px; }
-    .chain-node.anchor { background: #e1edf9; border-color: #316ac5; font-weight: bold; color: var(--win-blue-dark); }
+    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
+    .chain-node.anchor { background: #e1edf9; border-color: #316ac5; font-weight: bold; }
 
-    /* Modal Overlay */
-    .modal-overlay {
+    /* Performance Task Manager Chart */
+    .chart-box {
+      background: #000; border: 2px inset #716f64;
+      padding: 10px; display: flex; flex-direction: column; align-items: center;
+    }
+
+    canvas { background: #000; border: 1px solid #00ff00; }
+
+    /* In-App Retro Dialog Modal */
+    .inapp-modal-overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.4); display: none;
-      justify-content: center; align-items: center; z-index: 100;
+      background: rgba(0, 0, 0, 0.3); display: none;
+      justify-content: center; align-items: center; z-index: 300;
     }
 
-    .modal-window {
-      width: 380px; background: var(--win-bg);
+    .inapp-modal {
+      width: 340px; background: var(--win-bg);
       border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
-      box-shadow: 4px 4px 15px rgba(0,0,0,0.6);
+      box-shadow: 4px 4px 15px rgba(0,0,0,0.6); display: flex; flex-direction: column;
     }
 
-    .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .inapp-modal-body {
+      padding: 16px; font-size: 12px; line-height: 1.5; text-align: center;
+      display: flex; flex-direction: column; gap: 12px;
+    }
 
-    /* Taskbar & XP Start Menu */
+    /* Start Menu Pop-up */
+    .start-menu {
+      position: absolute; bottom: 30px; left: 0; width: 220px;
+      background: var(--win-bg); border: 2px solid var(--win-blue);
+      border-radius: 0 8px 0 0; box-shadow: 3px 3px 10px rgba(0,0,0,0.5);
+      display: none; flex-direction: column; z-index: 200;
+    }
+
+    .start-menu-header {
+      background: var(--xp-title-gradient); color: white; padding: 8px;
+      font-weight: bold; display: flex; align-items: center; gap: 6px;
+    }
+
+    .start-menu-item {
+      padding: 6px 12px; display: flex; align-items: center; gap: 8px;
+      cursor: pointer; font-size: 11px;
+    }
+
+    .start-menu-item:hover { background: #316ac5; color: white; }
+
+    /* Taskbar */
     .taskbar {
       height: 30px; background: linear-gradient(180deg, #3182e4 0%, #0055ea 10%, #0040b8 90%, #002681 100%);
-      display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 50;
-      position: relative;
+      display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 150;
     }
 
     .start-btn {
       height: 26px; padding: 0 12px 0 8px; background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%);
       border: 1px solid #ffffff; border-radius: 0 8px 8px 0; color: white; font-weight: bold;
-      font-style: italic; font-size: 12px; display: flex; align-items: center; gap: 6px; cursor: pointer;
-      box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
-    }
-    .start-btn:hover { filter: brightness(1.1); }
-
-    .taskbar-items { display: flex; gap: 4px; flex: 1; margin-left: 8px; }
-    .taskbar-tab {
-      background: linear-gradient(180deg, #388eef 0%, #0053ee 85%, #001dd2 100%);
-      color: white; border: 1px solid #002681; border-radius: 3px; padding: 2px 10px;
-      font-size: 11px; display: flex; align-items: center; gap: 6px; cursor: pointer;
+      font-style: italic; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
     .system-tray {
       height: 100%; background: linear-gradient(180deg, #0f8bf3 0%, #0c6ac1 100%);
       border-left: 1px solid #094a87; padding: 0 10px; display: flex; align-items: center; color: white;
     }
-
-    /* Start Menu Popup */
-    .start-menu {
-      position: absolute; bottom: 30px; left: 0; width: 280px;
-      background: var(--win-bg); border: 2px solid var(--win-blue);
-      border-radius: 6px 6px 0 0; box-shadow: 4px -4px 15px rgba(0,0,0,0.5);
-      display: none; flex-direction: column; z-index: 99; overflow: hidden;
-    }
-
-    .start-header {
-      background: var(--xp-title-gradient); padding: 8px 12px;
-      color: white; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px;
-    }
-
-    .start-body { display: flex; background: #ffffff; border-top: 1px solid #d0ccc0; border-bottom: 1px solid #d0ccc0; }
-    .start-left { flex: 1; padding: 6px 0; display: flex; flex-direction: column; }
-    .start-item {
-      padding: 6px 12px; display: flex; align-items: center; gap: 8px;
-      cursor: pointer; font-size: 11px;
-    }
-    .start-item:hover { background: #316ac5; color: white; }
-
-    .start-footer {
-      background: linear-gradient(180deg, #4282d3 0%, #1754b5 100%);
-      padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;
-    }
-
-    .power-btn {
-      background: linear-gradient(180deg, #e38271 0%, #d8432a 100%);
-      border: 1px solid #ffffff; border-radius: 3px; color: white;
-      font-weight: bold; padding: 4px 8px; cursor: pointer; font-size: 11px;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .power-btn:hover { filter: brightness(1.15); }
-
-    .sponsor-start-btn {
-      background: linear-gradient(180deg, #ff99bb 0%, #cc0055 100%);
-      border: 1px solid #ffffff; border-radius: 3px; color: white;
-      font-weight: bold; padding: 4px 8px; cursor: pointer; font-size: 11px;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .sponsor-start-btn:hover { filter: brightness(1.15); }
   </style>
 </head>
 <body>
 
-<!-- Desktop Environment -->
 <div class="desktop">
-  <!-- Desktop Shortcuts Vertical Layout -->
+  <!-- Desktop Shortcuts arranged vertically -->
   <div class="desktop-shortcuts">
-    <div class="icon" onclick="openMainWindow(); switchTab('pinpoint');">
+    <div class="icon" onclick="switchTab('pinpoint')">
       <div class="icon-img">🎯</div>
       <div>1. PINPOINT</div>
     </div>
-    <div class="icon" onclick="openMainWindow(); switchTab('overlap');">
+    <div class="icon" onclick="switchTab('overlap')">
       <div class="icon-img">⭕</div>
       <div>2. OVERLAP</div>
     </div>
-    <div class="icon" onclick="openMainWindow(); switchTab('chain');">
+    <div class="icon" onclick="switchTab('chain')">
       <div class="icon-img">🔗</div>
       <div>3. CHAIN</div>
     </div>
@@ -293,45 +270,58 @@
   </div>
 
   <!-- Main Application Window -->
-  <div class="window" id="main-window">
+  <div class="window" id="app-window">
     <div class="title-bar">
-      <div class="title-bar-text">
-        <span>💾</span> DATUM - Daily Puzzle Suite (v1.0.4)
-      </div>
+      <span>💾 DATUM - Daily Logic Suite</span>
       <div class="title-controls">
-        <div class="win-btn" onclick="toggleMainWindow()">_</div>
+        <div class="win-btn">_</div>
         <div class="win-btn">□</div>
-        <div class="win-btn close" onclick="closeMainWindow()">✕</div>
+        <div class="win-btn close" onclick="toggleAppWindow()">✕</div>
       </div>
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="alert('DATUM Daily Logic Engine v1.0.4\nResets daily at Midnight UTC.')">File</div>
-      <div class="menu-item" onclick="alert('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag items into Venn diagram.\n3. CHAIN: Sequence steps in chronological order.')">How to Play</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.0.6\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag or click items into Venn diagram.\n3. CHAIN: Sequence steps chronologically.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
 
     <div class="window-body">
+      <!-- In-App Retro Modal Dialog -->
+      <div class="inapp-modal-overlay" id="inapp-modal">
+        <div class="inapp-modal">
+          <div class="title-bar">
+            <span id="modal-title">DATUM Notice</span>
+            <div class="win-btn close" onclick="closeModal()">✕</div>
+          </div>
+          <div class="inapp-modal-body">
+            <div id="modal-text" style="white-space: pre-line;">Message here</div>
+            <div><button class="btn btn-primary" onclick="closeModal()" style="width: 100px;">OK</button></div>
+          </div>
+        </div>
+      </div>
+
       <div class="tabs">
         <div class="tab active" id="tab-pinpoint" onclick="switchTab('pinpoint')">1. PINPOINT</div>
         <div class="tab" id="tab-overlap" onclick="switchTab('overlap')">2. OVERLAP</div>
         <div class="tab" id="tab-chain" onclick="switchTab('chain')">3. CHAIN</div>
+        <div class="tab" id="tab-stats" onclick="switchTab('stats')">4. PERFORMANCE</div>
       </div>
 
       <!-- GAME 1: PINPOINT -->
       <div id="game-pinpoint" class="game-panel">
         <div class="help-panel">
-          <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer (±)</strong>.<br>
-          If the secret answer falls inside your window (Target - Buffer to Target + Buffer), you score points! Tighter buffers yield up to <strong>1,000 pts</strong>.
+          <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer (&plusmn;)</strong>.<br>
+          If the answer falls inside your target buffer (from Target - Buffer to Target + Buffer), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
         </div>
         <div class="group-box">
-          <div class="group-box-title">Daily Precision Challenge</div>
-          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px; margin-bottom: 12px;">In what year was the original Nintendo Entertainment System (NES) released in North America?</p>
+          <div class="group-box-title">Target & Buffer Precision</div>
+          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px; margin-bottom: 12px;"></p>
           
           <div class="pinpoint-display">
             Target Guess: <span class="pinpoint-val" id="target-display">1985</span><br>
-            Accepted Window: <strong id="window-display">1980 — 1990</strong> (±<span id="buffer-display">5</span>)<br>
-            <div style="margin-top: 6px; color: #555;">Est. Score Payout: <strong id="payout-display">500</strong> pts</div>
+            Accepted Window: <span id="window-display">1980 &mdash; 1990</span> (&plusmn;<span id="buffer-display">5</span>)<br>
+            <div style="margin-top: 6px; color: #555;">Est. Potential Payout: <strong id="payout-display">500</strong> pts</div>
           </div>
 
           <div style="padding: 0 15px;">
@@ -340,7 +330,7 @@
               <input type="range" id="slider-target" oninput="updatePinpointUI()">
             </div>
             <div class="slider-row">
-              <label>Tolerance Buffer (±):</label>
+              <label>Tolerance Buffer (&plusmn;):</label>
               <input type="range" id="slider-buffer" oninput="updatePinpointUI()">
             </div>
           </div>
@@ -354,7 +344,7 @@
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
         <div class="help-panel">
-          <strong>Goal:</strong> Drag each card from the bank and drop it into Circle A, Circle B, or the Overlap zone in the center.
+          <strong>Goal:</strong> Drag cards into the Venn diagram zones (or click a card to cycle through zones: Bank &rarr; A &rarr; Both &rarr; B &rarr; Bank).
         </div>
         <div class="group-box">
           <div class="group-box-title">Venn Diagram Sorting</div>
@@ -363,7 +353,7 @@
 
             <div class="venn-container">
               <div class="drop-zone zone-a" id="zone-A" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'A')">
-                <div class="zone-label" id="label-A">Directed by Steven Spielberg</div>
+                <div class="zone-label" id="label-A">Circle A</div>
                 <div class="zone-items" id="items-A"></div>
               </div>
               <div class="drop-zone zone-both" id="zone-BOTH" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'BOTH')">
@@ -371,7 +361,7 @@
                 <div class="zone-items" id="items-BOTH"></div>
               </div>
               <div class="drop-zone zone-b" id="zone-B" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'B')">
-                <div class="zone-label" id="label-B">Won Best Picture Oscar</div>
+                <div class="zone-label" id="label-B">Circle B</div>
                 <div class="zone-items" id="items-B"></div>
               </div>
             </div>
@@ -396,77 +386,45 @@
         </div>
       </div>
 
+      <!-- STATS & PERFORMANCE -->
+      <div id="game-stats" class="game-panel" style="display: none;">
+        <div class="help-panel">
+          <strong>Windows Task Manager:</strong> System Performance & Score Analytics.
+        </div>
+        <div class="group-box">
+          <div class="group-box-title">Score History & Percentile</div>
+          <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+            <div>Today's Total: <strong id="stat-today-score">0 / 3000</strong></div>
+            <div>Estimated Rank: <strong id="stat-percentile" style="color: var(--win-blue-dark);">--</strong></div>
+          </div>
+          <div class="chart-box">
+            <canvas id="scoreChart" width="550" height="150"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
-<!-- Sponsor Dialog Window -->
-<div class="modal-overlay" id="sponsor-modal">
-  <div class="modal-window">
-    <div class="title-bar">
-      <span>💖 Support DATUM Development</span>
-      <div class="win-btn close" onclick="closeSponsorModal()">✕</div>
-    </div>
-    <div class="modal-body">
-      <p style="margin: 0; line-height: 1.4;">
-        DATUM is completely free and ad-free. If you enjoy playing daily, consider supporting ongoing development!
-      </p>
-      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
-        <a href="https://github.com/sponsors" target="_blank" style="text-decoration: none;">
-          <button class="btn btn-primary" style="width: 100%;">GitHub Sponsors</button>
-        </a>
-        <a href="https://ko-fi.com" target="_blank" style="text-decoration: none;">
-          <button class="btn" style="width: 100%;">Buy Me a Coffee / Ko-fi</button>
-        </a>
-      </div>
-      <div style="text-align: right; margin-top: 8px;">
-        <button class="btn" onclick="closeSponsorModal()">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Windows XP Start Menu Pop-up -->
+<!-- Start Menu Pop-up -->
 <div class="start-menu" id="start-menu">
-  <div class="start-header">
-    <span style="font-size: 16px;">👤</span> Administrator
+  <div class="start-menu-header">
+    <span>💾 DATUM Suite</span>
   </div>
-  <div class="start-body">
-    <div class="start-left">
-      <div class="start-item" onclick="openMainWindow(); switchTab('pinpoint'); toggleStartMenu();">
-        <span>🎯</span> 1. PINPOINT
-      </div>
-      <div class="start-item" onclick="openMainWindow(); switchTab('overlap'); toggleStartMenu();">
-        <span>⭕</span> 2. OVERLAP
-      </div>
-      <div class="start-item" onclick="openMainWindow(); switchTab('chain'); toggleStartMenu();">
-        <span>🔗</span> 3. CHAIN
-      </div>
-      <div style="height: 1px; background: #e0e0e0; margin: 4px 0;"></div>
-      <div class="start-item" onclick="openSponsorModal(); toggleStartMenu();">
-        <span>💖</span> Sponsor DATUM
-      </div>
-    </div>
-  </div>
-  <div class="start-footer">
-    <button class="sponsor-start-btn" onclick="openSponsorModal(); toggleStartMenu();">
-      💖 Sponsor
-    </button>
-    <button class="power-btn" onclick="closeMainWindow(); toggleStartMenu();">
-      ⭕ Turn Off DATUM
-    </button>
-  </div>
+  <div class="start-menu-item" onclick="switchTab('pinpoint'); toggleStartMenu();">🎯 Play PINPOINT</div>
+  <div class="start-menu-item" onclick="switchTab('overlap'); toggleStartMenu();">⭕ Play OVERLAP</div>
+  <div class="start-menu-item" onclick="switchTab('chain'); toggleStartMenu();">🔗 Play CHAIN</div>
+  <div class="start-menu-item" onclick="switchTab('stats'); toggleStartMenu();">📊 Performance Stats</div>
+  <hr style="width: 90%; border: 0; border-top: 1px solid #ccc; margin: 4px auto;">
+  <div class="start-menu-item" onclick="openSponsorModal(); toggleStartMenu();">💖 Sponsor Project</div>
+  <div class="start-menu-item" onclick="toggleAppWindow(); toggleStartMenu();" style="color: #b21a00; font-weight: bold;">⭕ Turn Off / On DATUM</div>
 </div>
 
 <!-- Taskbar -->
 <div class="taskbar">
   <div class="start-btn" onclick="toggleStartMenu()">
     <span>start</span>
-  </div>
-  <div class="taskbar-items">
-    <div class="taskbar-tab" id="taskbar-app" onclick="toggleMainWindow()">
-      <span>💾</span> DATUM Suite
-    </div>
   </div>
   <div class="system-tray">
     <span id="clock">12:00 PM</span>
@@ -477,8 +435,8 @@
   const DAILY_PUZZLES = {
     "default": {
       pinpoint: {
-        question: "In what year was the original Nintendo Entertainment System (NES) released in North America?",
-        answer: 1985, min: 1970, max: 2000, maxBuffer: 15
+        question: "In what year was the original Game Boy released by Nintendo in Japan?",
+        answer: 1989, min: 1975, max: 2005, maxBuffer: 15
       },
       overlap: {
         categoryA: "Directed by Steven Spielberg",
@@ -505,12 +463,14 @@
   let activeData = DAILY_PUZZLES["default"];
   let overlapPlacements = {};
   let currentChain = [];
+  let dailyScores = { pinpoint: 0, overlap: 0, chain: 0 };
 
   window.onload = () => {
     initClock();
     initPinpoint();
     initOverlap();
     initChain();
+    loadScoreHistory();
   };
 
   function initClock() {
@@ -520,29 +480,28 @@
     update(); setInterval(update, 10000);
   }
 
-  /* Start Menu and Window Controls */
   function toggleStartMenu() {
-    const sm = document.getElementById('start-menu');
-    sm.style.display = (sm.style.display === 'flex') ? 'none' : 'flex';
+    const menu = document.getElementById('start-menu');
+    menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
   }
 
-  function closeMainWindow() {
-    document.getElementById('main-window').style.display = 'none';
-    document.getElementById('taskbar-app').style.opacity = '0.5';
+  function toggleAppWindow() {
+    const win = document.getElementById('app-window');
+    win.style.display = (win.style.display === 'none') ? 'flex' : 'none';
   }
 
-  function openMainWindow() {
-    document.getElementById('main-window').style.display = 'flex';
-    document.getElementById('taskbar-app').style.opacity = '1';
+  function showModal(text, title = "DATUM Notice") {
+    document.getElementById('modal-title').innerText = title;
+    document.getElementById('modal-text').innerText = text;
+    document.getElementById('inapp-modal').style.display = 'flex';
   }
 
-  function toggleMainWindow() {
-    const win = document.getElementById('main-window');
-    if (win.style.display === 'none') {
-      openMainWindow();
-    } else {
-      closeMainWindow();
-    }
+  function closeModal() {
+    document.getElementById('inapp-modal').style.display = 'none';
+  }
+
+  function openSponsorModal() {
+    showModal("DATUM is completely free and ad-free.\n\nSupport development via GitHub Sponsors or Ko-fi:\ngithub.sponsors / ko-fi.com", "💖 Sponsor Project");
   }
 
   function switchTab(tab) {
@@ -558,11 +517,12 @@
     } else if (tab === 'chain') {
       document.getElementById('tab-chain').classList.add('active');
       document.getElementById('game-chain').style.display = 'block';
+    } else if (tab === 'stats') {
+      document.getElementById('tab-stats').classList.add('active');
+      document.getElementById('game-stats').style.display = 'block';
+      renderChart();
     }
   }
-
-  function openSponsorModal() { document.getElementById('sponsor-modal').style.display = 'flex'; }
-  function closeSponsorModal() { document.getElementById('sponsor-modal').style.display = 'none'; }
 
   /* 1. PINPOINT LOGIC */
   function initPinpoint() {
@@ -597,14 +557,16 @@
     const answer = activeData.pinpoint.answer;
 
     if (Math.abs(answer - target) <= buffer) {
-      const potential = Math.round(1000 * (1 - (buffer / (activeData.pinpoint.maxBuffer + 1))));
-      alert(`BULLSEYE! Secret answer was ${answer}.\nIt fell within your buffer range [${target-buffer} to ${target+buffer}].\nScore: ${potential} pts!`);
+      dailyScores.pinpoint = Math.round(1000 * (1 - (buffer / (activeData.pinpoint.maxBuffer + 1))));
+      showModal(`BULLSEYE!\nSecret answer was ${answer}.\nScore: ${dailyScores.pinpoint} pts!`, "PINPOINT Result");
     } else {
-      alert(`MISSED! Secret answer was ${answer}.\nYour buffer range [${target-buffer} to ${target+buffer}] missed it.\nScore: 0 pts.`);
+      dailyScores.pinpoint = 0;
+      showModal(`MISSED!\nSecret answer was ${answer}.\nScore: 0 pts.`, "PINPOINT Result");
     }
+    saveTodayScore();
   }
 
-  /* 2. OVERLAP LOGIC */
+  /* 2. OVERLAP LOGIC (Drag-and-Drop + Click Cycle) */
   function initOverlap() {
     document.getElementById('label-A').innerText = activeData.overlap.categoryA;
     document.getElementById('label-B').innerText = activeData.overlap.categoryB;
@@ -618,9 +580,29 @@
       card.id = `card-${item.id}`;
       card.draggable = true;
       card.ondragstart = (e) => e.dataTransfer.setData('text/plain', item.id);
+      card.onclick = () => cycleCardZone(item.id);
       deck.appendChild(card);
       overlapPlacements[item.id] = 'deck';
     });
+  }
+
+  const zoneSequence = ['deck', 'A', 'BOTH', 'B'];
+  function cycleCardZone(itemId) {
+    const currentZone = overlapPlacements[itemId];
+    const nextIdx = (zoneSequence.indexOf(currentZone) + 1) % zoneSequence.length;
+    const nextZone = zoneSequence[nextIdx];
+    moveCardToZone(itemId, nextZone);
+  }
+
+  function moveCardToZone(itemId, zone) {
+    const card = document.getElementById(`card-${itemId}`);
+    if (!card) return;
+    overlapPlacements[itemId] = zone;
+    if (zone === 'deck') {
+      document.getElementById('card-deck').appendChild(card);
+    } else {
+      document.getElementById(`items-${zone}`).appendChild(card);
+    }
   }
 
   function allowDrop(e) { e.preventDefault(); if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.add('drag-over'); }
@@ -630,18 +612,15 @@
     e.preventDefault();
     if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over');
     const id = e.dataTransfer.getData('text/plain');
-    const card = document.getElementById(`card-${id}`);
-    if (!card) return;
-
-    overlapPlacements[id] = zone;
-    if (zone === 'deck') document.getElementById('card-deck').appendChild(card);
-    else document.getElementById(`items-${zone}`).appendChild(card);
+    if (id) moveCardToZone(id, zone);
   }
 
   function submitOverlap() {
     let correct = 0;
     activeData.overlap.items.forEach(item => { if (overlapPlacements[item.id] === item.target) correct++; });
-    alert(`OVERLAP RESULT: ${correct} / ${activeData.overlap.items.length} cards placed correctly!`);
+    dailyScores.overlap = Math.round((correct / activeData.overlap.items.length) * 1000);
+    showModal(`OVERLAP RESULT:\n${correct} / ${activeData.overlap.items.length} cards placed correctly!\nScore: ${dailyScores.overlap} pts!`, "OVERLAP Evaluation");
+    saveTodayScore();
   }
 
   /* 3. CHAIN LOGIC */
@@ -682,7 +661,72 @@
 
   function submitChain() {
     let ok = currentChain.every((s, i) => s.id === activeData.chain.steps[i].id);
-    alert(ok ? 'CHAIN VERIFIED! Correct sequence.' : 'SEQUENCE ERROR! Incorrect order.');
+    dailyScores.chain = ok ? 1000 : 0;
+    showModal(ok ? 'CHAIN VERIFIED!\nSequence correct (1,000 pts).' : 'SEQUENCE ERROR!\nIncorrect order (0 pts).', "CHAIN Evaluation");
+    saveTodayScore();
+  }
+
+  /* LOCAL STORAGE & PERCENTILE CALCULATOR */
+  function saveTodayScore() {
+    const today = new Date().toISOString().split('T')[0];
+    const total = dailyScores.pinpoint + dailyScores.overlap + dailyScores.chain;
+    
+    let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
+    history[today] = total;
+    localStorage.setItem('datum_scores', JSON.stringify(history));
+
+    updatePercentileDisplay(total);
+  }
+
+  function updatePercentileDisplay(total) {
+    document.getElementById('stat-today-score').innerText = `${total} / 3000`;
+    let pct = "Bottom 50%";
+    if (total >= 2800) pct = "Top 3% (Optimal)";
+    else if (total >= 2400) pct = "Top 12% (Superior)";
+    else if (total >= 1800) pct = "Top 35% (Nominal)";
+    
+    document.getElementById('stat-percentile').innerText = pct;
+  }
+
+  function loadScoreHistory() {
+    const today = new Date().toISOString().split('T')[0];
+    let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
+    let total = history[today] || 0;
+    updatePercentileDisplay(total);
+  }
+
+  function renderChart() {
+    const canvas = document.getElementById('scoreChart');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Draw Gridlines
+    ctx.strokeStyle = '#004400';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 30) {
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 25) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
+
+    // Draw Score Line
+    let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
+    let scores = Object.values(history).slice(-10);
+    if (scores.length < 2) scores = [1200, 2100, 1800, 2750]; // Sample curve preview
+
+    ctx.strokeStyle = '#00ff00';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    let step = canvas.width / (scores.length - 1);
+    scores.forEach((s, i) => {
+      let x = i * step;
+      let y = canvas.height - ((s / 3000) * (canvas.height - 20) + 10);
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
   }
 </script>
 </body>
