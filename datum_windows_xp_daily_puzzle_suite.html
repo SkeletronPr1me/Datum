@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full select-none">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DATUM - System Diagnostic Daily Puzzle Suite</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        xp: {
+                            blue: '#0058e6',
+                            titleDark: '#00227b',
+                            titleLight: '#0058e6',
+                            bg: '#008080', // Classic Teal Desktop Background
+                            windowBg: '#ece9d8',
+                            border: '#003c74',
+                            activeBlue: '#166aef',
+                            taskbar: '#1f53d8',
+                            startGreen: '#388e3c'
+                        }
+                    },
+                    fontFamily: {
+                        tahoma: ['Tahoma', 'Segoe UI', 'Geneva', 'Verdana', 'sans-serif'],
+                        mono: ['Courier New', 'Courier', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Tahoma', 'Segoe UI', Geneva, Verdana, sans-serif;
+            background-color: #008080;
+            overflow: hidden;
+        }
+
+        /* Classic Windows XP Window Inset & Outset Bevel Borders */
+        .xp-window {
+            background-color: #ece9d8;
+            border: 3px solid #0055ea;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .xp-title-bar {
+            background: linear-gradient(to bottom, #0058e6 0%, #003c74 12%, #0055ea 85%, #00227b 100%);
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+
+        .xp-panel {
+            background-color: #ffffff;
+            border: 2px solid #7f9db9;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.2);
+        }
+
+        .xp-button {
+            background: linear-gradient(to bottom, #ffffff 0%, #ece9d8 80%, #d8d0c5 100%);
+            border: 1px solid #003c74;
+            border-radius: 3px;
+            box-shadow: inset 1px 1px 0px #ffffff, 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .xp-button:hover {
+            background: linear-gradient(to bottom, #fff8e1 0%, #ffe0b2 100%);
+            border-color: #e65100;
+        }
+        .xp-button:active {
+            background: #d8d0c5;
+            box-shadow: inset 1px 1px 2px rgba(0,0,0,0.4);
+        }
+
+        .xp-button-close {
+            background: linear-gradient(to bottom, #e96e5c 0%, #d83b23 50%, #991d0c 100%);
+            border: 1px solid #ffffff;
+            border-radius: 3px;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+        .xp-button-close:hover {
+            background: linear-gradient(to bottom, #ff8c7a 0%, #f44336 100%);
+        }
+
+        /* XP Taskbar Styling */
+        .xp-taskbar {
+            background: linear-gradient(to bottom, #245edb 0%, #1941a5 12%, #1952e5 85%, #021a70 100%);
+            border-top: 1px solid #3d78fd;
+        }
+
+        .xp-start-btn {
+            background: linear-gradient(to bottom, #388e3c 0%, #2e7d32 50%, #1b5e20 100%);
+            border-radius: 0 10px 10px 0;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+        .xp-start-btn:hover {
+            background: linear-gradient(to bottom, #4caf50 0%, #388e3c 100%);
+        }
+
+        /* Custom Drag & Drop & Slider visuals */
+        input[type=range] {
+            accent-color: #0055ea;
+        }
+
+        .droppable-target {
+            transition: all 0.2s ease;
+        }
+        .droppable-target.drag-over {
+            background-color: #e3f2fd;
+            border-color: #0058e6;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex flex-col justify-between p-0 m-0 text-slate-800 text-sm">
+
+    <!-- DESKTOP CONTAINER -->
+    <div class="relative flex-1 p-4 sm:p-8 flex items-center justify-center overflow-hidden">
+        
+        <!-- Desktop Shortcuts -->
+        <div class="absolute top-4 left-4 flex flex-col space-y-6 z-0">
+            <div onclick="showAboutDialog()" class="flex flex-col items-center w-20 p-2 rounded hover:bg-white/20 cursor-pointer text-white text-center text-xs drop-shadow">
+                <i class="fa-solid fa-desktop text-3xl text-cyan-200 mb-1"></i>
+                <span>My Computer</span>
+            </div>
+            <div onclick="showAboutDialog()" class="flex flex-col items-center w-20 p-2 rounded hover:bg-white/20 cursor-pointer text-white text-center text-xs drop-shadow">
+                <i class="fa-solid fa-chart-line text-3xl text-yellow-300 mb-1"></i>
+                <span>DATUM v1.0</span>
+            </div>
+            <div onclick="toggleSponsorDialog()" class="flex flex-col items-center w-20 p-2 rounded hover:bg-white/20 cursor-pointer text-white text-center text-xs drop-shadow">
+                <i class="fa-solid fa-heart text-3xl text-pink-400 mb-1"></i>
+                <span>Sponsor Us</span>
+            </div>
+            <div onclick="resetDailyState()" class="flex flex-col items-center w-20 p-2 rounded hover:bg-white/20 cursor-pointer text-white text-center text-xs drop-shadow">
+                <i class="fa-solid fa-trash-can text-3xl text-red-300 mb-1"></i>
+                <span>Recycle Bin</span>
+            </div>
+        </div>
+
+        <!-- MAIN WINDOW: DATUM SYSTEM DIAGNOSTIC -->
+        <div id="mainWindow" class="xp-window w-full max-w-3xl z-10 flex flex-col shadow-2xl transition-all duration-300">
+            
+            <!-- Window Title Bar -->
+            <div class="xp-title-bar px-3 py-1.5 flex items-center justify-between text-white font-bold text-xs select-none">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-microchip text-yellow-300"></i>
+                    <span id="windowTitleText">DATUM System Diagnostics - [Daily Suite]</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <button onclick="toggleSponsorDialog()" class="px-2 py-0.5 bg-pink-600 hover:bg-pink-500 text-white text-xs rounded border border-pink-300 mr-1 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-heart text-[10px]"></i> Sponsor
+                    </button>
+                    <button onclick="toggleAudio()" id="audioToggleBtn" class="px-2 py-0.5 bg-blue-800/60 hover:bg-blue-700 text-white text-xs rounded border border-blue-400 mr-2">
+                        <i id="audioIcon" class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <button onclick="minimizeWindow()" class="xp-button px-2 py-0.5 text-black font-bold text-xs">_</button>
+                    <button onclick="showAboutDialog()" class="xp-button px-2 py-0.5 text-black font-bold text-xs">?</button>
+                    <button onclick="minimizeWindow()" class="xp-button-close px-2 py-0.5 text-white font-bold text-xs">X</button>
+                </div>
+            </div>
+
+            <!-- XP Menu Bar -->
+            <div class="bg-[#ece9d8] border-b border-gray-400 px-2 py-1 flex items-center space-x-4 text-xs text-black select-none">
+                <span class="hover:bg-blue-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer" onclick="showAboutDialog()"><u>F</u>ile</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer" onclick="toggleAudio()"><u>O</u>ptions</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer" onclick="toggleSponsorDialog()"><u>S</u>ponsor</span>
+                <span class="hover:bg-blue-600 hover:text-white px-1.5 py-0.5 rounded cursor-pointer" onclick="showHelpDialog()"><u>H</u>elp</span>
+                <div class="flex-1 text-right text-gray-600 text-[11px]" id="currentSystemDate">
+                    System Date: 2026-10-09
+                </div>
+            </div>
+
+            <!-- WINDOW BODY CONTENT -->
+            <div class="p-4 sm:p-6 space-y-4">
+                
+                <!-- System Header Bar -->
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-blue-50 border border-blue-200 p-3 rounded text-xs gap-2">
+                    <div>
+                        <div class="font-bold text-blue-900 text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-server"></i> DAILY DIAGNOSTIC SEQUENCE
+                        </div>
+                        <div class="text-slate-600">Complete all 3 module diagnostics to generate today's system log.</div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-bold block">TIME UNTIL RESET</span>
+                        <span id="countdownTimer" class="font-mono text-sm font-bold text-blue-700">00:00:00</span>
+                    </div>
+                </div>
+
+                <!-- MODULE PROGRESS TABS -->
+                <div class="flex border-b border-gray-400 text-xs gap-1">
+                    <button id="tab-0" onclick="switchModuleTab(0)" class="px-4 py-1.5 font-bold border-t-2 border-x-2 border-blue-600 bg-white text-blue-900 rounded-t">
+                        1. RANGE
+                    </button>
+                    <button id="tab-1" onclick="switchModuleTab(1)" class="px-4 py-1.5 font-bold border-t-2 border-transparent bg-gray-200 text-gray-600 rounded-t">
+                        2. OVERLAP
+                    </button>
+                    <button id="tab-2" onclick="switchModuleTab(2)" class="px-4 py-1.5 font-bold border-t-2 border-transparent bg-gray-200 text-gray-600 rounded-t">
+                        3. CHAIN
+                    </button>
+                </div>
+
+                <!-- MODULE 1: RANGE (Confidence Interval Slider) -->
+                <div id="module-0" class="xp-panel p-4 space-y-4">
+                    <div class="border-b pb-2 flex items-center justify-between">
+                        <div>
+                            <span class="bg-blue-700 text-white font-mono text-[10px] px-2 py-0.5 rounded uppercase">Module 01: Numerical Interval</span>
+                            <h3 class="font-bold text-base text-slate-900 mt-1" id="rangeQuestionTitle">Loading question...</h3>
+                        </div>
+                        <i class="fa-solid fa-sliders text-2xl text-blue-600"></i>
+                    </div>
+
+                    <p class="text-xs text-slate-600">Set a lower and upper range bound. Tighter intervals earn higher precision points ($1000 \text{ max}$), but missing the actual value completely yields $0 \text{ pts}$.</p>
+
+                    <!-- Interval Visualizer Box -->
+                    <div class="bg-slate-100 border border-slate-300 p-4 rounded text-center space-y-3">
+                        <div class="flex items-center justify-around font-mono">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">LOWER BOUND</span>
+                                <span id="rangeMinVal" class="text-xl font-bold text-blue-800">1980</span>
+                            </div>
+                            <div class="text-slate-400 font-bold"><---></div>
+                            <div>
+                                <span class="text-[10px] text-slate-500 block">UPPER BOUND</span>
+                                <span id="rangeMaxVal" class="text-xl font-bold text-blue-800">2000</span>
+                            </div>
+                        </div>
+
+                        <!-- Dual Range Controls -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-bold w-16 text-right">Min:</span>
+                                <input type="range" id="rangeMinInput" class="w-full" oninput="updateRangeValues()">
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <span class="text-xs font-bold w-16 text-right">Max:</span>
+                                <input type="range" id="rangeMaxInput" class="w-full" oninput="updateRangeValues()">
+                            </div>
+                        </div>
+
+                        <div class="text-xs text-blue-900 bg-blue-100 p-2 rounded border border-blue-200 flex justify-between items-center">
+                            <span>Estimated Precision Multiplier: <strong id="rangePointsEst">500 pts</strong></span>
+                            <span id="rangeSpreadText" class="font-mono text-[11px] text-slate-600">Spread: 20</span>
+                        </div>
+                    </div>
+
+                    <button id="rangeSubmitBtn" onclick="submitRangeAnswer()" class="xp-button w-full py-2 font-bold text-xs text-blue-900 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> LOCK RANGE INTERVAL
+                    </button>
+                </div>
+
+                <!-- MODULE 2: OVERLAP (Venn Diagram Sorting) -->
+                <div id="module-1" class="xp-panel p-4 space-y-4 hidden">
+                    <div class="border-b pb-2 flex items-center justify-between">
+                        <div>
+                            <span class="bg-purple-700 text-white font-mono text-[10px] px-2 py-0.5 rounded uppercase">Module 02: Venn Categorization</span>
+                            <h3 class="font-bold text-base text-slate-900 mt-1" id="overlapTitle">Sort items into their respective structural sets.</h3>
+                        </div>
+                        <i class="fa-solid fa-cubes text-2xl text-purple-600"></i>
+                    </div>
+
+                    <div class="text-xs text-slate-600 flex justify-between items-center">
+                        <span>Click an item card, then select its target Venn region below:</span>
+                        <span id="overlapScoreCounter" class="font-bold text-purple-800">Sorted: 0/4</span>
+                    </div>
+
+                    <!-- Items Pool to Sort -->
+                    <div id="overlapItemsPool" class="flex flex-wrap gap-2 p-3 bg-slate-100 border border-slate-300 rounded min-h-[50px] items-center justify-center">
+                        <!-- Populated dynamically -->
+                    </div>
+
+                    <!-- Venn Target Zones Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div id="venn-A" onclick="assignSelectedToVenn('A')" class="droppable-target xp-panel p-2 text-center rounded hover:border-blue-600 cursor-pointer min-h-[90px] flex flex-col justify-between">
+                            <span class="font-bold text-blue-700 border-b pb-1 block" id="label-A">Region A</span>
+                            <div class="venn-contents space-y-1 my-1"></div>
+                        </div>
+                        <div id="venn-BOTH" onclick="assignSelectedToVenn('BOTH')" class="droppable-target xp-panel p-2 text-center rounded hover:border-purple-600 cursor-pointer min-h-[90px] flex flex-col justify-between">
+                            <span class="font-bold text-purple-700 border-b pb-1 block">A & B Both</span>
+                            <div class="venn-contents space-y-1 my-1"></div>
+                        </div>
+                        <div id="venn-B" onclick="assignSelectedToVenn('B')" class="droppable-target xp-panel p-2 text-center rounded hover:border-green-600 cursor-pointer min-h-[90px] flex flex-col justify-between">
+                            <span class="font-bold text-green-700 border-b pb-1 block" id="label-B">Region B</span>
+                            <div class="venn-contents space-y-1 my-1"></div>
+                        </div>
+                        <div id="venn-NEITHER" onclick="assignSelectedToVenn('NEITHER')" class="droppable-target xp-panel p-2 text-center rounded hover:border-red-600 cursor-pointer min-h-[90px] flex flex-col justify-between">
+                            <span class="font-bold text-slate-600 border-b pb-1 block">Neither Set</span>
+                            <div class="venn-contents space-y-1 my-1"></div>
+                        </div>
+                    </div>
+
+                    <button id="overlapSubmitBtn" onclick="submitOverlapAnswer()" class="xp-button w-full py-2 font-bold text-xs text-purple-900 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> VERIFY VENN STRUCTURE
+                    </button>
+                </div>
+
+                <!-- MODULE 3: CHAIN (Cause & Effect Sequence) -->
+                <div id="module-2" class="xp-panel p-4 space-y-4 hidden">
+                    <div class="border-b pb-2 flex items-center justify-between">
+                        <div>
+                            <span class="bg-amber-700 text-white font-mono text-[10px] px-2 py-0.5 rounded uppercase">Module 03: Sequential Reaction</span>
+                            <h3 class="font-bold text-base text-slate-900 mt-1" id="chainTitle">Sequence intermediate steps between Start and End.</h3>
+                        </div>
+                        <i class="fa-solid fa-link text-2xl text-amber-600"></i>
+                    </div>
+
+                    <!-- Sequence Container -->
+                    <div class="space-y-2 text-xs">
+                        <!-- Start Anchor -->
+                        <div class="bg-amber-100 border-2 border-amber-500 p-2.5 rounded font-bold text-amber-900 flex items-center gap-2">
+                            <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded">START</span>
+                            <span id="chainStartText">Start Event Anchor</span>
+                        </div>
+
+                        <!-- 3 Intermediary Slots -->
+                        <div class="pl-4 space-y-2 border-l-2 border-dashed border-amber-300">
+                            <div id="chainSlot-0" onclick="swapChainSlot(0)" class="xp-panel p-2 rounded cursor-pointer hover:bg-amber-50 flex items-center justify-between border-slate-300">
+                                <span>Step 1: <strong class="chain-slot-text text-slate-500">[Click card to assign]</strong></span>
+                                <i class="fa-solid fa-arrows-up-down text-slate-400"></i>
+                            </div>
+                            <div id="chainSlot-1" onclick="swapChainSlot(1)" class="xp-panel p-2 rounded cursor-pointer hover:bg-amber-50 flex items-center justify-between border-slate-300">
+                                <span>Step 2: <strong class="chain-slot-text text-slate-500">[Click card to assign]</strong></span>
+                                <i class="fa-solid fa-arrows-up-down text-slate-400"></i>
+                            </div>
+                            <div id="chainSlot-2" onclick="swapChainSlot(2)" class="xp-panel p-2 rounded cursor-pointer hover:bg-amber-50 flex items-center justify-between border-slate-300">
+                                <span>Step 3: <strong class="chain-slot-text text-slate-500">[Click card to assign]</strong></span>
+                                <i class="fa-solid fa-arrows-up-down text-slate-400"></i>
+                            </div>
+                        </div>
+
+                        <!-- End Anchor -->
+                        <div class="bg-amber-100 border-2 border-amber-500 p-2.5 rounded font-bold text-amber-900 flex items-center gap-2">
+                            <span class="bg-amber-500 text-white text-[10px] px-2 py-0.5 rounded">END</span>
+                            <span id="chainEndText">End Event Anchor</span>
+                        </div>
+                    </div>
+
+                    <!-- Available Unassigned Pool -->
+                    <div class="pt-2">
+                        <span class="text-[11px] font-bold text-slate-600 block mb-1">Available Step Cards:</span>
+                        <div id="chainPool" class="flex flex-wrap gap-2 p-2 bg-slate-100 border border-slate-300 rounded min-h-[45px] items-center">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <button id="chainSubmitBtn" onclick="submitChainAnswer()" class="xp-button w-full py-2 font-bold text-xs text-amber-900 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check-double"></i> EXECUTE CHAIN REACTION
+                    </button>
+                </div>
+
+                <!-- RESULTS VIEW: SYSTEM DIAGNOSTIC REPORT -->
+                <div id="module-results" class="xp-panel p-5 space-y-4 hidden text-center">
+                    <div class="space-y-1">
+                        <i class="fa-solid fa-circle-check text-4xl text-green-600"></i>
+                        <h2 class="font-bold text-xl text-slate-900">DIAGNOSTIC COMPLETE</h2>
+                        <p class="text-xs text-slate-600">Daily Diagnostic sequence recorded for system date.</p>
+                    </div>
+
+                    <!-- Diagnostic Metrics Summary Box -->
+                    <div class="bg-slate-900 text-green-400 p-4 rounded font-mono text-left text-xs space-y-2 border-2 border-slate-700 shadow-inner">
+                        <div class="border-b border-green-800 pb-1 flex justify-between">
+                            <span>SYSTEM REPORT: DATUM-v1.0</span>
+                            <span id="reportDateText">2026-10-09</span>
+                        </div>
+                        <div id="reportModule1Text">> MODULE 01 [RANGE]  : PASS (+750 PTS)</div>
+                        <div id="reportModule2Text">> MODULE 02 [OVERLAP]: PASS (+1000 PTS)</div>
+                        <div id="reportModule3Text">> MODULE 03 [CHAIN]  : PASS (+1000 PTS)</div>
+                        <div class="border-t border-green-800 pt-1 flex justify-between font-bold text-yellow-400">
+                            <span>TOTAL PERFORMANCE SCORE:</span>
+                            <span id="reportTotalScore">2750 PTS</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+                        <button onclick="copySystemReport()" class="xp-button w-full sm:w-auto px-6 py-2 text-xs font-bold text-blue-900 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-copy"></i> COPY DIAGNOSTIC REPORT
+                        </button>
+                        <button onclick="toggleSponsorDialog()" class="xp-button w-full sm:w-auto px-6 py-2 text-xs font-bold text-pink-700 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-heart"></i> SPONSOR PROJECT
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- XP Window Status Bar -->
+            <div class="bg-[#ece9d8] border-t border-gray-400 px-3 py-1 flex items-center justify-between text-[11px] text-gray-700 select-none">
+                <span id="statusBarText">Status: All modules loaded and ready.</span>
+                <span class="font-mono text-[10px] text-slate-500">Memory: 640K OK</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SPONSOR DIALOG MODAL -->
+    <div id="sponsorModal" class="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4 hidden">
+        <div class="xp-window w-full max-w-md shadow-2xl">
+            <div class="xp-title-bar px-3 py-1.5 flex items-center justify-between text-white font-bold text-xs">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-heart text-pink-300"></i>
+                    <span>Sponsor DATUM Daily Puzzle Suite</span>
+                </div>
+                <button onclick="toggleSponsorDialog()" class="xp-button-close px-2 py-0.5 text-white font-bold text-xs">X</button>
+            </div>
+            <div class="p-4 space-y-3 bg-[#ece9d8] text-xs">
+                <div class="bg-white p-3 border border-gray-400 rounded flex gap-3 items-center">
+                    <i class="fa-solid fa-hand-holding-heart text-3xl text-pink-500"></i>
+                    <div>
+                        <div class="font-bold text-slate-900">Support Open-Source Development</div>
+                        <div class="text-slate-600">Help keep DATUM server-free, ad-light, and continuously updated with daily puzzles.</div>
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-1">
+                    <a href="https://github.com/sponsors" target="_blank" class="xp-button w-full py-2 px-3 font-bold text-slate-800 flex items-center justify-between hover:no-underline">
+                        <span class="flex items-center gap-2"><i class="fa-brands fa-github text-base"></i> GitHub Sponsors</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-gray-500"></i>
+                    </a>
+                    <a href="https://ko-fi.com" target="_blank" class="xp-button w-full py-2 px-3 font-bold text-slate-800 flex items-center justify-between hover:no-underline">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-mug-hot text-amber-600 text-base"></i> Buy Me a Coffee / Ko-fi</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square text-gray-500"></i>
+                    </a>
+                </div>
+
+                <div class="pt-2 text-right">
+                    <button onclick="toggleSponsorDialog()" class="xp-button px-5 py-1.5 font-bold text-xs text-slate-800">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WINDOWS XP TASKBAR -->
+    <div class="xp-taskbar h-9 w-full flex items-center justify-between px-0 z-40 select-none relative">
+        <div class="flex items-center space-x-1 h-full">
+            <!-- Start Button -->
+            <button onclick="toggleStartMenu()" class="xp-start-btn h-full px-3 flex items-center space-x-2 text-white font-bold text-sm italic pr-4">
+                <i class="fa-brands fa-windows text-lg text-white"></i>
+                <span>start</span>
+            </button>
+
+            <!-- Active Task Bar Button -->
+            <div class="bg-blue-900/80 border border-blue-400 h-7 px-3 rounded flex items-center space-x-2 text-white text-xs">
+                <i class="fa-solid fa-microchip text-yellow-300"></i>
+                <span class="font-bold">DATUM System</span>
+            </div>
+        </div>
+
+        <!-- System Tray -->
+        <div class="bg-[#092c74] h-full px-3 flex items-center space-x-3 text-white text-xs border-l border-blue-400">
+            <i class="fa-solid fa-shield-halved text-green-400 text-xs" title="System Security: Protected"></i>
+            <i class="fa-solid fa-volume-high text-xs cursor-pointer" onclick="toggleAudio()"></i>
+            <span id="taskbarClock" class="font-tahoma">12:00 PM</span>
+        </div>
+    </div>
+
+    <!-- START MENU POPUP -->
+    <div id="startMenu" class="absolute bottom-9 left-0 w-64 bg-white border-2 border-blue-700 rounded-tr-lg shadow-2xl z-50 hidden text-xs">
+        <div class="bg-gradient-to-r from-blue-700 to-blue-500 p-2 flex items-center space-x-2 text-white font-bold">
+            <div class="w-7 h-7 rounded-full bg-orange-400 flex items-center justify-center border border-white">
+                <i class="fa-solid fa-user text-white"></i>
+            </div>
+            <span>User Administrator</span>
+        </div>
+        <div class="p-2 space-y-1 bg-blue-50">
+            <div onclick="toggleSponsorDialog(); toggleStartMenu();" class="p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-heart text-pink-600"></i>
+                <span>Sponsor Project</span>
+            </div>
+            <div onclick="showAboutDialog(); toggleStartMenu();" class="p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-circle-info text-blue-600"></i>
+                <span>About DATUM</span>
+            </div>
+            <div onclick="resetDailyState(); toggleStartMenu();" class="p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-rotate-left text-red-600"></i>
+                <span>Reset Local Diagnostic</span>
+            </div>
+            <div class="border-t border-gray-300 my-1"></div>
+            <div onclick="minimizeWindow(); toggleStartMenu();" class="p-1.5 hover:bg-blue-600 hover:text-white rounded cursor-pointer flex items-center space-x-2">
+                <i class="fa-solid fa-power-off text-red-500"></i>
+                <span>Log Off / Minimize</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // QUESTION DATABASE FOR ALL THREE MODULES
+        const QUESTION_POOL = [
+            {
+                dateKey: "2026-10-09",
+                range: {
+                    q: "What year was the original Nintendo Entertainment System (NES) released in North America?",
+                    target: 1985,
+                    minPossible: 1970,
+                    maxPossible: 2000
+                },
+                overlap: {
+                    title: "Sort movies released before the year 2000 vs Oscar Best Picture Winners.",
+                    labelA: "Released Pre-2000",
+                    labelB: "Best Picture Winner",
+                    items: [
+                        { text: "Titanic", correct: "BOTH" },
+                        { text: "Gladiator", correct: "B" },
+                        { text: "Jurassic Park", correct: "A" },
+                        { text: "Inception", correct: "NEITHER" }
+                    ]
+                },
+                chain: {
+                    title: "Arrange the chronological evolution of personal computing hardware.",
+                    start: "ENIAC Vacuum Tubes (1945)",
+                    end: "Modern Smartphone SoC (2007)",
+                    pool: [
+                        { id: 1, text: "Transistor Invention at Bell Labs" },
+                        { id: 2, text: "Intel 4004 Microprocessor" },
+                        { id: 3, text: "IBM Personal Computer (PC 5150)" }
+                    ],
+                    correctOrder: [1, 2, 3]
+                }
+            }
+        ];
+
+        // Global State Variables
+        let soundEnabled = true;
+        let audioCtx = null;
+        let activeTab = 0;
+        let selectedOverlapItem = null;
+        let selectedChainCard = null;
+
+        let userScores = { range: 0, overlap: 0, chain: 0 };
+        let moduleCompleted = [false, false, false];
+
+        let overlapAssignments = { A: [], BOTH: [], B: [], NEITHER: [] };
+        let chainSlots = [null, null, null];
+        let chainPoolItems = [];
+
+        // WEB AUDIO SYNTHESIZER FOR XP CHORDS
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) audioCtx = new AudioContext();
+            }
+        }
+
+        function playXpSound(type) {
+            if (!soundEnabled) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            try {
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.03);
+                    osc.start(now);
+                    osc.stop(now + 0.03);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.linearRampToValueAtTime(0.001, now + 0.2);
+                    osc.start(now);
+                    osc.stop(now + 0.2);
+                }
+            } catch(e) {
+                console.log("Audio Error:", e);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            document.getElementById('audioIcon').className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+            if (soundEnabled) playXpSound('click');
+        }
+
+        function switchModuleTab(index) {
+            playXpSound('click');
+            activeTab = index;
+
+            for (let i = 0; i < 3; i++) {
+                const tab = document.getElementById(`tab-${i}`);
+                const mod = document.getElementById(`module-${i}`);
+                if (i === index) {
+                    tab.className = "px-4 py-1.5 font-bold border-t-2 border-x-2 border-blue-600 bg-white text-blue-900 rounded-t";
+                    mod.classList.remove('hidden');
+                } else {
+                    tab.className = "px-4 py-1.5 font-bold border-t-2 border-transparent bg-gray-200 text-gray-600 rounded-t";
+                    mod.classList.add('hidden');
+                }
+            }
+        }
+
+        // MODULE 1: RANGE LOGIC
+        function initRangeModule(data) {
+            document.getElementById('rangeQuestionTitle').innerText = data.q;
+            const minInput = document.getElementById('rangeMinInput');
+            const maxInput = document.getElementById('rangeMaxInput');
+
+            minInput.min = data.minPossible;
+            minInput.max = data.maxPossible;
+            minInput.value = data.minPossible + 5;
+
+            maxInput.min = data.minPossible;
+            maxInput.max = data.maxPossible;
+            maxInput.value = data.maxPossible - 5;
+
+            updateRangeValues();
+        }
+
+        function updateRangeValues() {
+            const minInput = document.getElementById('rangeMinInput');
+            const maxInput = document.getElementById('rangeMaxInput');
+
+            let minVal = parseInt(minInput.value);
+            let maxVal = parseInt(maxInput.value);
+
+            if (minVal > maxVal) {
+                minVal = maxVal;
+                minInput.value = minVal;
+            }
+
+            document.getElementById('rangeMinVal').innerText = minVal;
+            document.getElementById('rangeMaxVal').innerText = maxVal;
+
+            const spread = Math.max(1, maxVal - minVal + 1);
+            const estPoints = Math.round(1000 / (spread * 0.1));
+            document.getElementById('rangePointsEst').innerText = `~${Math.min(1000, estPoints)} pts`;
+            document.getElementById('rangeSpreadText').innerText = `Spread: ${spread}`;
+        }
+
+        function submitRangeAnswer() {
+            const data = QUESTION_POOL[0].range;
+            const minVal = parseInt(document.getElementById('rangeMinInput').value);
+            const maxVal = parseInt(document.getElementById('rangeMaxInput').value);
+
+            if (data.target >= minVal && data.target <= maxVal) {
+                const spread = Math.max(1, maxVal - minVal + 1);
+                const pts = Math.min(1000, Math.round(1000 / (spread * 0.08)));
+                userScores.range = pts;
+                playXpSound('correct');
+                document.getElementById('statusBarText').innerText = `Module 01 PASS: Target was ${data.target}. Earned ${pts} pts!`;
+            } else {
+                userScores.range = 0;
+                playXpSound('error');
+                document.getElementById('statusBarText').innerText = `Module 01 FAIL: Target was ${data.target} (Outside interval). 0 pts.`;
+            }
+
+            moduleCompleted[0] = true;
+            document.getElementById('rangeSubmitBtn').disabled = true;
+            document.getElementById('rangeSubmitBtn').className = "xp-button w-full py-2 font-bold text-xs text-gray-400 cursor-not-allowed opacity-60";
+            
+            setTimeout(() => switchModuleTab(1), 1200);
+        }
+
+        // MODULE 2: OVERLAP LOGIC
+        function initOverlapModule(data) {
+            document.getElementById('overlapTitle').innerText = data.title;
+            document.getElementById('label-A').innerText = data.labelA;
+            document.getElementById('label-B').innerText = data.labelB;
+
+            const pool = document.getElementById('overlapItemsPool');
+            pool.innerHTML = '';
+            data.items.forEach((item, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `overlap-card-${idx}`;
+                btn.className = "xp-button px-3 py-1.5 font-bold text-xs text-slate-800 shadow";
+                btn.innerText = item.text;
+                btn.onclick = () => selectOverlapItem(idx, item);
+                pool.appendChild(btn);
+            });
+        }
+
+        function selectOverlapItem(idx, itemObj) {
+            playXpSound('click');
+            selectedOverlapItem = { idx, ...itemObj };
+            
+            document.querySelectorAll('#overlapItemsPool button').forEach(b => b.classList.remove('border-red-600', 'bg-yellow-100'));
+            const card = document.getElementById(`overlap-card-${idx}`);
+            if (card) card.classList.add('bg-yellow-100');
+        }
+
+        function assignSelectedToVenn(region) {
+            if (!selectedOverlapItem) return;
+            playXpSound('click');
+
+            const card = document.getElementById(`overlap-card-${selectedOverlapItem.idx}`);
+            if (card) card.remove();
+
+            const targetBox = document.querySelector(`#venn-${region} .venn-contents`);
+            const tag = document.createElement('span');
+            tag.className = "inline-block bg-white border border-slate-400 px-2 py-0.5 rounded text-[11px] font-bold shadow-sm m-0.5";
+            tag.innerText = selectedOverlapItem.text;
+            targetBox.appendChild(tag);
+
+            overlapAssignments[region].push(selectedOverlapItem);
+            selectedOverlapItem = null;
+
+            const totalSorted = Object.values(overlapAssignments).reduce((a, b) => a + b.length, 0);
+            document.getElementById('overlapScoreCounter').innerText = `Sorted: ${totalSorted}/4`;
+        }
+
+        function submitOverlapAnswer() {
+            let correctCount = 0;
+            Object.keys(overlapAssignments).forEach(region => {
+                overlapAssignments[region].forEach(item => {
+                    if (item.correct === region) correctCount++;
+                });
+            });
+
+            const pts = correctCount * 250;
+            userScores.overlap = pts;
+            moduleCompleted[1] = true;
+
+            if (pts > 0) playXpSound('correct'); else playXpSound('error');
+
+            document.getElementById('statusBarText').innerText = `Module 02 COMPLETE: Score ${pts}/1000 pts (${correctCount}/4 correct).`;
+            document.getElementById('overlapSubmitBtn').disabled = true;
+            document.getElementById('overlapSubmitBtn').className = "xp-button w-full py-2 font-bold text-xs text-gray-400 cursor-not-allowed opacity-60";
+
+            setTimeout(() => switchModuleTab(2), 1200);
+        }
+
+        // MODULE 3: CHAIN LOGIC
+        function initChainModule(data) {
+            document.getElementById('chainTitle').innerText = data.title;
+            document.getElementById('chainStartText').innerText = data.start;
+            document.getElementById('chainEndText').innerText = data.end;
+
+            chainPoolItems = [...data.pool];
+            renderChainPool();
+        }
+
+        function renderChainPool() {
+            const poolEl = document.getElementById('chainPool');
+            poolEl.innerHTML = '';
+            chainPoolItems.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "xp-button px-3 py-1.5 text-xs font-bold text-slate-800 cursor-pointer shadow";
+                card.innerText = item.text;
+                card.onclick = () => selectChainCard(item);
+                poolEl.appendChild(card);
+            });
+        }
+
+        function selectChainCard(item) {
+            playXpSound('click');
+            selectedChainCard = item;
+            
+            // Assign to first empty slot
+            const emptyIdx = chainSlots.findIndex(s => s === null);
+            if (emptyIdx !== -1) {
+                chainSlots[emptyIdx] = item;
+                chainPoolItems = chainPoolItems.filter(i => i.id !== item.id);
+                renderChainPool();
+                renderChainSlots();
+            }
+        }
+
+        function swapChainSlot(slotIdx) {
+            playXpSound('click');
+            if (chainSlots[slotIdx]) {
+                chainPoolItems.push(chainSlots[slotIdx]);
+                chainSlots[slotIdx] = null;
+                renderChainPool();
+                renderChainSlots();
+            }
+        }
+
+        function renderChainSlots() {
+            for (let i = 0; i < 3; i++) {
+                const slotEl = document.getElementById(`chainSlot-${i}`);
+                const txt = slotEl.querySelector('.chain-slot-text');
+                if (chainSlots[i]) {
+                    txt.innerText = chainSlots[i].text;
+                    txt.className = "chain-slot-text font-bold text-blue-900";
+                } else {
+                    txt.innerText = "[Click card to assign]";
+                    txt.className = "chain-slot-text text-slate-400";
+                }
+            }
+        }
+
+        function submitChainAnswer() {
+            const data = QUESTION_POOL[0].chain;
+            let isCorrect = true;
+
+            for (let i = 0; i < 3; i++) {
+                if (!chainSlots[i] || chainSlots[i].id !== data.correctOrder[i]) {
+                    isCorrect = false;
+                    break;
+                }
+            }
+
+            const pts = isCorrect ? 1000 : 0;
+            userScores.chain = pts;
+            moduleCompleted[2] = true;
+
+            if (isCorrect) playXpSound('correct'); else playXpSound('error');
+
+            document.getElementById('statusBarText').innerText = `Module 03 COMPLETE: Chain execution ${isCorrect ? 'SUCCESS (+1000 pts)' : 'FAILED (0 pts)'}.`;
+            showResults();
+        }
+
+        function showResults() {
+            for (let i = 0; i < 3; i++) {
+                document.getElementById(`module-${i}`).classList.add('hidden');
+            }
+            document.getElementById('module-results').classList.remove('hidden');
+
+            const total = userScores.range + userScores.overlap + userScores.chain;
+            document.getElementById('reportModule1Text').innerText = `> MODULE 01 [RANGE]  : ${userScores.range > 0 ? 'PASS' : 'FAIL'} (+${userScores.range} PTS)`;
+            document.getElementById('reportModule2Text').innerText = `> MODULE 02 [OVERLAP]: ${userScores.overlap > 0 ? 'PASS' : 'FAIL'} (+${userScores.overlap} PTS)`;
+            document.getElementById('reportModule3Text').innerText = `> MODULE 03 [CHAIN]  : ${userScores.chain > 0 ? 'PASS' : 'FAIL'} (+${userScores.chain} PTS)`;
+            document.getElementById('reportTotalScore').innerText = `${total} PTS`;
+
+            // Save to LocalStorage
+            const dateStr = new Date().toISOString().split('T')[0];
+            localStorage.setItem(`datum_daily_${dateStr}`, total);
+        }
+
+        function copySystemReport() {
+            playXpSound('click');
+            const total = userScores.range + userScores.overlap + userScores.chain;
+            const text = `DATUM System Diagnostic [2026-10-09]\nScore: ${total}/3000 PTS 🖥️\nRange: ${userScores.range} | Overlap: ${userScores.overlap} | Chain: ${userScores.chain}\nhttps://skeletronpr1me.github.io/`;
+            
+            const dummy = document.createElement('textarea');
+            document.body.appendChild(dummy);
+            dummy.value = text;
+            dummy.select();
+            document.execCommand('copy');
+            document.body.removeChild(dummy);
+
+            alert("System Diagnostic Log copied to Clipboard!");
+        }
+
+        // UTILITY SYSTEM FUNCTIONS
+        function toggleSponsorDialog() {
+            playXpSound('click');
+            document.getElementById('sponsorModal').classList.toggle('hidden');
+        }
+
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12 || 12;
+            document.getElementById('taskbarClock').innerText = `${hours}:${minutes} ${ampm}`;
+
+            // Countdown to Midnight
+            const midnight = new Date(now);
+            midnight.setHours(24, 0, 0, 0);
+            const diff = midnight - now;
+            const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+            const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+            const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            document.getElementById('countdownTimer').innerText = `${h}:${m}:${s}`;
+        }
+
+        function toggleStartMenu() {
+            playXpSound('click');
+            document.getElementById('startMenu').classList.toggle('hidden');
+        }
+
+        function minimizeWindow() {
+            playXpSound('click');
+            const win = document.getElementById('mainWindow');
+            win.classList.toggle('scale-0');
+            win.classList.toggle('opacity-0');
+        }
+
+        function showAboutDialog() {
+            playXpSound('click');
+            alert("DATUM v1.0 - Windows XP Daily Diagnostic Puzzle Suite\nBuilt for high precision daily brain training.");
+        }
+
+        function showHelpDialog() {
+            playXpSound('click');
+            alert("HELP:\n1. RANGE: Set Min/Max slider interval.\n2. OVERLAP: Sort items into Venn circles.\n3. CHAIN: Order steps between Start & End.");
+        }
+
+        function resetDailyState() {
+            playXpSound('click');
+            const dateStr = new Date().toISOString().split('T')[0];
+            localStorage.removeItem(`datum_daily_${dateStr}`);
+            alert("Local diagnostic state reset. Refreshing sequence...");
+            location.reload();
+        }
+
+        // INITIALIZE APPLICATION
+        window.onload = function() {
+            const data = QUESTION_POOL[0];
+            initRangeModule(data.range);
+            initOverlapModule(data.overlap);
+            initChainModule(data.chain);
+
+            setInterval(updateClock, 1000);
+            updateClock();
+        };
+    </script>
+</body>
+</html>
