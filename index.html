@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DATUM - Daily Puzzle Suite</title>
+  <title>DATUM - Daily Logic Engine</title>
   <style>
     :root {
       --win-blue: #0055ea;
@@ -26,16 +26,32 @@
       height: 100vh; display: flex; flex-direction: column; overflow: hidden;
     }
 
+    /* Desktop Environment */
     .desktop {
-      flex: 1; padding: 12px; display: flex;
+      flex: 1; padding: 16px; display: flex;
       justify-content: center; align-items: center; position: relative;
     }
 
+    .desktop-shortcuts {
+      position: absolute; top: 16px; left: 16px;
+      display: flex; flex-direction: column; gap: 20px; z-index: 1;
+    }
+
+    .icon {
+      display: flex; flex-direction: column; align-items: center;
+      width: 70px; cursor: pointer; color: white;
+      text-shadow: 1px 1px 2px black; font-size: 11px; text-align: center;
+    }
+
+    .icon:hover { filter: brightness(1.2); }
+    .icon-img { font-size: 32px; margin-bottom: 4px; }
+
+    /* Main App Window */
     .window {
-      width: 680px; max-width: 95vw; background: var(--win-bg);
+      width: 700px; max-width: 95vw; background: var(--win-bg);
       border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
-      box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
-      display: flex; flex-direction: column; overflow: hidden;
+      box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
+      display: flex; flex-direction: column; overflow: hidden; z-index: 10;
     }
 
     .title-bar {
@@ -48,17 +64,25 @@
 
     .win-btn {
       width: 21px; height: 21px; border: 1px solid #ffffff; border-radius: 3px;
-      background: linear-gradient(180deg, #e38271 0%, #d8432a 50%, #b21a00 100%);
-      color: white; font-weight: bold; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer;
+      background: linear-gradient(180deg, #7fa3e2 0%, #3a70cb 50%, #1f479f 100%);
+      color: white; font-weight: bold; font-size: 11px; line-height: 18px;
+      text-align: center; cursor: pointer;
     }
 
+    .win-btn.close {
+      background: linear-gradient(180deg, #e38271 0%, #d8432a 50%, #b21a00 100%);
+    }
+
+    /* Menu Bar */
     .menu-bar {
       background: #ece9d8; border-bottom: 1px solid #d0ccc0;
-      padding: 2px 6px; display: flex; gap: 12px; font-size: 11px;
+      padding: 3px 6px; display: flex; gap: 14px; font-size: 11px;
     }
 
-    .menu-item { padding: 2px 4px; cursor: pointer; }
+    .menu-item { padding: 2px 6px; cursor: pointer; border-radius: 2px; }
     .menu-item:hover { background: #316ac5; color: white; }
+    .menu-item.sponsor-btn { font-weight: bold; color: #b21a00; }
+    .menu-item.sponsor-btn:hover { background: #b21a00; color: white; }
 
     .window-body {
       padding: 12px; display: flex; flex-direction: column; gap: 12px;
@@ -68,7 +92,7 @@
     .tabs { display: flex; border-bottom: 1px solid var(--win-border-dark); gap: 2px; }
 
     .tab {
-      padding: 4px 12px; background: #d8d0c5;
+      padding: 5px 14px; background: #d8d0c5;
       border: 1px solid var(--win-border-dark); border-bottom: none;
       border-radius: 3px 3px 0 0; cursor: pointer; font-weight: bold;
     }
@@ -79,7 +103,7 @@
     }
 
     .group-box {
-      border: 1px solid #d0ccc0; border-radius: 4px; padding: 12px;
+      border: 1px solid #d0ccc0; border-radius: 4px; padding: 14px;
       background: #ffffff; position: relative;
     }
 
@@ -89,13 +113,14 @@
     }
 
     .help-panel {
-      background: #fff8dc; border: 1px solid #e6dbb8; padding: 8px;
+      background: #fff8dc; border: 1px solid #e6dbb8; padding: 8px 12px;
       border-radius: 3px; margin-bottom: 10px; line-height: 1.4;
     }
 
+    /* XP Styled Controls */
     .btn {
       background: var(--xp-btn-gradient); border: 1px solid #7f9db9;
-      border-radius: 3px; padding: 4px 14px; font-family: inherit;
+      border-radius: 3px; padding: 5px 16px; font-family: inherit;
       font-size: 11px; cursor: pointer; box-shadow: inset 0 1px 0 #ffffff;
     }
 
@@ -107,29 +132,29 @@
       color: white; border-color: #1a5ca3; font-weight: bold;
     }
 
-    /* PINPOINT Specifics */
+    /* 1. PINPOINT UI */
     .pinpoint-display { text-align: center; margin: 15px 0; }
     .pinpoint-val { font-size: 22px; font-weight: bold; color: var(--win-blue-dark); }
     .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-    .slider-row label { width: 110px; font-weight: bold; }
+    .slider-row label { width: 120px; font-weight: bold; }
     input[type=range] { flex: 1; }
 
-    /* OVERLAP Specifics */
+    /* 2. OVERLAP DRAG & DROP UI */
     .overlap-board { display: flex; flex-direction: column; gap: 12px; align-items: center; }
     .card-deck {
       display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
-      min-height: 42px; padding: 6px; width: 100%; background: #f0f0f0;
+      min-height: 48px; padding: 8px; width: 100%; background: #f0f0f0;
       border: 1px dashed #a0a0a0; border-radius: 4px;
     }
 
     .draggable-card {
-      background: #ffffff; border: 1px solid #7f9db9; padding: 6px 10px;
+      background: #ffffff; border: 1px solid #7f9db9; padding: 6px 12px;
       border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-weight: bold;
     }
 
     .venn-container {
       display: flex; justify-content: center; position: relative;
-      width: 100%; height: 200px; margin-top: 10px;
+      width: 100%; height: 210px; margin-top: 10px;
     }
 
     .drop-zone {
@@ -139,26 +164,41 @@
     }
 
     .drop-zone.drag-over { background: rgba(49, 106, 197, 0.2) !important; border-style: solid; }
-    .zone-a { width: 180px; height: 180px; left: 20%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
-    .zone-b { width: 180px; height: 180px; right: 20%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
+    .zone-a { width: 190px; height: 190px; left: 18%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
+    .zone-b { width: 190px; height: 190px; right: 18%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
     .zone-both {
-      width: 100px; height: 140px; left: calc(50% - 50px); top: 20px;
+      width: 110px; height: 150px; left: calc(50% - 55px); top: 20px;
       border-radius: 40%; background: rgba(200, 255, 200, 0.4); border-color: var(--xp-green); z-index: 2;
     }
 
     .zone-label { font-weight: bold; font-size: 10px; pointer-events: none; text-align: center; }
-    .zone-items { display: flex; flex-direction: column; gap: 3px; margin-top: 5px; pointer-events: none; }
-    .zone-items .draggable-card { font-size: 9px; padding: 2px 5px; }
+    .zone-items { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; pointer-events: none; }
+    .zone-items .draggable-card { font-size: 9px; padding: 2px 6px; }
 
-    /* CHAIN Specifics */
+    /* 3. CHAIN UI */
     .chain-container { display: flex; flex-direction: column; gap: 8px; }
-    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 6px; border: 1px solid #ccc; border-radius: 3px; }
+    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
     .chain-node.anchor { background: #e1edf9; border-color: #316ac5; font-weight: bold; }
 
-    /* Taskbar */
+    /* XP Sponsor Dialog Window */
+    .modal-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.4); display: none;
+      justify-content: center; align-items: center; z-index: 100;
+    }
+
+    .modal-window {
+      width: 380px; background: var(--win-bg);
+      border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
+      box-shadow: 4px 4px 15px rgba(0,0,0,0.6);
+    }
+
+    .modal-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+
+    /* XP Taskbar */
     .taskbar {
       height: 30px; background: linear-gradient(180deg, #3182e4 0%, #0055ea 10%, #0040b8 90%, #002681 100%);
-      display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 100;
+      display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 50;
     }
 
     .start-btn {
@@ -167,41 +207,68 @@
       font-style: italic; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
-    .system-tray { height: 100%; background: linear-gradient(180deg, #0f8bf3 0%, #0c6ac1 100%); border-left: 1px solid #094a87; padding: 0 8px; display: flex; align-items: center; color: white; }
+    .system-tray {
+      height: 100%; background: linear-gradient(180deg, #0f8bf3 0%, #0c6ac1 100%);
+      border-left: 1px solid #094a87; padding: 0 10px; display: flex; align-items: center; color: white;
+    }
   </style>
 </head>
 <body>
 
 <div class="desktop">
+  <!-- Desktop Shortcuts -->
+  <div class="desktop-shortcuts">
+    <div class="icon" onclick="switchTab('pinpoint')">
+      <div class="icon-img">🎯</div>
+      <div>1. PINPOINT</div>
+    </div>
+    <div class="icon" onclick="switchTab('overlap')">
+      <div class="icon-img">⭕</div>
+      <div>2. OVERLAP</div>
+    </div>
+    <div class="icon" onclick="switchTab('chain')">
+      <div class="icon-img">🔗</div>
+      <div>3. CHAIN</div>
+    </div>
+    <div class="icon" onclick="openSponsorModal()">
+      <div class="icon-img">💖</div>
+      <div>Sponsor</div>
+    </div>
+  </div>
+
+  <!-- Main Application Window -->
   <div class="window">
     <div class="title-bar">
       <span>💾 DATUM - Daily Puzzle Suite</span>
       <div class="title-controls">
-        <div class="win-btn">✕</div>
+        <div class="win-btn">_</div>
+        <div class="win-btn">□</div>
+        <div class="win-btn close" onclick="alert('DATUM runs continuously in system memory.')">✕</div>
       </div>
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="alert('DATUM: Daily Logic Engine\nResets daily at Midnight UTC.')">File</div>
-      <div class="menu-item" onclick="alert('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Sort items into Venn diagram.\n3. CHAIN: Order chronologically.')">Rules</div>
+      <div class="menu-item" onclick="alert('DATUM v1.0.4\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="alert('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag items into Venn diagram.\n3. CHAIN: Sequence steps in chronological order.')">How to Play</div>
+      <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
 
     <div class="window-body">
       <div class="tabs">
-        <div class="tab active" onclick="switchTab('pinpoint')">1. PINPOINT</div>
-        <div class="tab" onclick="switchTab('overlap')">2. OVERLAP</div>
-        <div class="tab" onclick="switchTab('chain')">3. CHAIN</div>
+        <div class="tab active" id="tab-pinpoint" onclick="switchTab('pinpoint')">1. PINPOINT</div>
+        <div class="tab" id="tab-overlap" onclick="switchTab('overlap')">2. OVERLAP</div>
+        <div class="tab" id="tab-chain" onclick="switchTab('chain')">3. CHAIN</div>
       </div>
 
       <!-- GAME 1: PINPOINT -->
       <div id="game-pinpoint" class="game-panel">
         <div class="help-panel">
-          <strong>Goal:</strong> Choose a single <strong>Target Value</strong> and set your <strong>Tolerance Buffer ($\pm$)</strong>.<br>
-          If the secret answer is inside your buffer ($[\text{Target} - \text{Buffer}, \text{Target} + \text{Buffer}]$), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
+          <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer ($\pm$)</strong>.<br>
+          If the answer falls inside your buffer ($[\text{Target} - \text{Buffer}, \text{Target} + \text{Buffer}]$), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
         </div>
         <div class="group-box">
           <div class="group-box-title">Target & Buffer Precision</div>
-          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px;"></p>
+          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px; margin-bottom: 12px;"></p>
           
           <div class="pinpoint-display">
             Target Guess: <span class="pinpoint-val" id="target-display">1985</span><br>
@@ -229,7 +296,7 @@
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
         <div class="help-panel">
-          <strong>Goal:</strong> Drag each card into Circle A, Circle B, or BOTH in the middle.
+          <strong>Goal:</strong> Drag each card from the bank and drop it into Circle A, Circle B, or the Overlap zone in the center.
         </div>
         <div class="group-box">
           <div class="group-box-title">Venn Diagram Sorting</div>
@@ -260,7 +327,7 @@
       <!-- GAME 3: CHAIN -->
       <div id="game-chain" class="game-panel" style="display: none;">
         <div class="help-panel">
-          <strong>Goal:</strong> Order the steps between the Start and End anchors using ▲/▼ buttons.
+          <strong>Goal:</strong> Order the intermediate steps chronologically between the Start and End anchors using the ▲/▼ controls.
         </div>
         <div class="group-box">
           <div class="group-box-title">Sequence Verification</div>
@@ -275,13 +342,43 @@
   </div>
 </div>
 
+<!-- Sponsor Dialog Window -->
+<div class="modal-overlay" id="sponsor-modal">
+  <div class="modal-window">
+    <div class="title-bar">
+      <span>💖 Support DATUM Development</span>
+      <div class="win-btn close" onclick="closeSponsorModal()">✕</div>
+    </div>
+    <div class="modal-body">
+      <p style="margin: 0; line-height: 1.4;">
+        DATUM is completely free and ad-free. If you enjoy playing daily, consider supporting the project!
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 6px;">
+        <a href="https://github.com/sponsors" target="_blank" style="text-decoration: none;">
+          <button class="btn btn-primary" style="width: 100%;">GitHub Sponsors</button>
+        </a>
+        <a href="https://ko-fi.com" target="_blank" style="text-decoration: none;">
+          <button class="btn" style="width: 100%;">Buy Me a Coffee / Ko-fi</button>
+        </a>
+      </div>
+      <div style="text-align: right; margin-top: 8px;">
+        <button class="btn" onclick="closeSponsorModal()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Taskbar -->
 <div class="taskbar">
-  <div class="start-btn"><span>start</span></div>
-  <div class="system-tray"><span id="clock">12:00 PM</span></div>
+  <div class="start-btn" onclick="alert('DATUM Desktop Suite v1.0.4')">
+    <span>start</span>
+  </div>
+  <div class="system-tray">
+    <span id="clock">12:00 PM</span>
+  </div>
 </div>
 
 <script>
-  // DAILY REPOSITORY FOR EASY TOPIC UPDATES
   const DAILY_PUZZLES = {
     "default": {
       pinpoint: {
@@ -333,16 +430,19 @@
     document.querySelectorAll('.game-panel').forEach(p => p.style.display = 'none');
     
     if (tab === 'pinpoint') {
-      document.querySelectorAll('.tab')[0].classList.add('active');
+      document.getElementById('tab-pinpoint').classList.add('active');
       document.getElementById('game-pinpoint').style.display = 'block';
     } else if (tab === 'overlap') {
-      document.querySelectorAll('.tab')[1].classList.add('active');
+      document.getElementById('tab-overlap').classList.add('active');
       document.getElementById('game-overlap').style.display = 'block';
     } else if (tab === 'chain') {
-      document.querySelectorAll('.tab')[2].classList.add('active');
+      document.getElementById('tab-chain').classList.add('active');
       document.getElementById('game-chain').style.display = 'block';
     }
   }
+
+  function openSponsorModal() { document.getElementById('sponsor-modal').style.display = 'flex'; }
+  function closeSponsorModal() { document.getElementById('sponsor-modal').style.display = 'none'; }
 
   /* 1. PINPOINT LOGIC */
   function initPinpoint() {
@@ -367,7 +467,6 @@
     document.getElementById('buffer-display').innerText = buffer;
     document.getElementById('window-display').innerText = `${target - buffer} — ${target + buffer}`;
 
-    // Scoring formula: 1000 max, scales down as buffer grows
     const potential = Math.round(1000 * (1 - (buffer / (maxBuffer + 1))));
     document.getElementById('payout-display').innerText = potential;
   }
