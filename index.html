@@ -9,482 +9,219 @@
       --win-blue: #0055ea;
       --win-blue-dark: #003399;
       --win-bg: #ece9d8;
-      --win-border-light: #ffffff;
       --win-border-dark: #716f64;
-      --win-shadow: #aca899;
       --xp-title-gradient: linear-gradient(180deg, #0058ee 0%, #388eef 12%, #0053ee 85%, #001dd2 100%);
       --xp-btn-gradient: linear-gradient(180deg, #ffffff 0%, #ece9d8 85%, #d8d0c5 100%);
       --xp-btn-active: linear-gradient(180deg, #d8d0c5 0%, #ece9d8 85%, #ffffff 100%);
       --xp-green: #2e8b57;
     }
 
-    * {
-      box-sizing: border-box;
-      user-select: none;
-    }
+    * { box-sizing: border-box; user-select: none; }
 
     body {
-      margin: 0;
-      padding: 0;
-      background: #3a6ea5; /* Windows XP Default Bliss Background Color fallback */
+      margin: 0; padding: 0;
+      background: #3a6ea5;
       font-family: "Tahoma", "Segoe UI", sans-serif;
-      font-size: 11px;
-      color: #000;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      font-size: 11px; color: #000;
+      height: 100vh; display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Desktop Area */
     .desktop {
-      flex: 1;
-      padding: 12px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
+      flex: 1; padding: 12px; display: flex;
+      justify-content: center; align-items: center; position: relative;
     }
 
-    /* Windows XP Window Styling */
     .window {
-      width: 680px;
-      max-width: 95vw;
-      background: var(--win-bg);
-      border: 3px solid var(--win-blue);
-      border-radius: 8px 8px 0 0;
+      width: 680px; max-width: 95vw; background: var(--win-bg);
+      border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
       box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.4);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+      display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Window Title Bar */
     .title-bar {
-      background: var(--xp-title-gradient);
-      padding: 4px 8px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      color: white;
-      font-weight: bold;
-      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+      background: var(--xp-title-gradient); padding: 4px 8px;
+      display: flex; align-items: center; justify-content: space-between;
+      color: white; font-weight: bold; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
     }
 
-    .title-text {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 12px;
-    }
-
-    .title-controls {
-      display: flex;
-      gap: 3px;
-    }
+    .title-controls { display: flex; gap: 3px; }
 
     .win-btn {
-      width: 21px;
-      height: 21px;
-      border: 1px solid #ffffff;
-      border-radius: 3px;
+      width: 21px; height: 21px; border: 1px solid #ffffff; border-radius: 3px;
       background: linear-gradient(180deg, #e38271 0%, #d8432a 50%, #b21a00 100%);
-      color: white;
-      font-weight: bold;
-      font-size: 11px;
-      line-height: 18px;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: inset 0 0 2px rgba(255, 255, 255, 0.8);
+      color: white; font-weight: bold; font-size: 11px; line-height: 18px; text-align: center; cursor: pointer;
     }
 
-    .win-btn.min, .win-btn.max {
-      background: linear-gradient(180deg, #7fa3e2 0%, #3a70cb 50%, #1f479f 100%);
-    }
-
-    /* Menu Bar */
     .menu-bar {
-      background: #ece9d8;
-      border-bottom: 1px solid #d0ccc0;
-      padding: 2px 6px;
-      display: flex;
-      gap: 12px;
-      font-size: 11px;
+      background: #ece9d8; border-bottom: 1px solid #d0ccc0;
+      padding: 2px 6px; display: flex; gap: 12px; font-size: 11px;
     }
 
-    .menu-item {
-      padding: 2px 4px;
-      cursor: pointer;
-    }
+    .menu-item { padding: 2px 4px; cursor: pointer; }
+    .menu-item:hover { background: #316ac5; color: white; }
 
-    .menu-item:hover {
-      background: #316ac5;
-      color: white;
-    }
-
-    /* Main Container Content */
     .window-body {
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      max-height: 80vh;
-      overflow-y: auto;
+      padding: 12px; display: flex; flex-direction: column; gap: 12px;
+      max-height: 80vh; overflow-y: auto;
     }
 
-    /* Game Mode Tabs */
-    .tabs {
-      display: flex;
-      border-bottom: 1px solid var(--win-border-dark);
-      gap: 2px;
-    }
+    .tabs { display: flex; border-bottom: 1px solid var(--win-border-dark); gap: 2px; }
 
     .tab {
-      padding: 4px 12px;
-      background: #d8d0c5;
-      border: 1px solid var(--win-border-dark);
-      border-bottom: none;
-      border-radius: 3px 3px 0 0;
-      cursor: pointer;
-      font-weight: bold;
+      padding: 4px 12px; background: #d8d0c5;
+      border: 1px solid var(--win-border-dark); border-bottom: none;
+      border-radius: 3px 3px 0 0; cursor: pointer; font-weight: bold;
     }
 
     .tab.active {
-      background: var(--win-bg);
-      border-color: var(--win-blue);
-      border-bottom: 1px solid var(--win-bg);
-      margin-bottom: -1px;
-      color: var(--win-blue-dark);
+      background: var(--win-bg); border-color: var(--win-blue);
+      border-bottom: 1px solid var(--win-bg); margin-bottom: -1px; color: var(--win-blue-dark);
     }
 
-    /* Group Box Container */
     .group-box {
-      border: 1px solid #d0ccc0;
-      border-radius: 4px;
-      padding: 12px;
-      background: #ffffff;
-      position: relative;
+      border: 1px solid #d0ccc0; border-radius: 4px; padding: 12px;
+      background: #ffffff; position: relative;
     }
 
     .group-box-title {
-      position: absolute;
-      top: -8px;
-      left: 10px;
-      background: #ffffff;
-      padding: 0 4px;
-      font-weight: bold;
-      color: var(--win-blue-dark);
-      font-size: 11px;
+      position: absolute; top: -8px; left: 10px; background: #ffffff;
+      padding: 0 4px; font-weight: bold; color: var(--win-blue-dark); font-size: 11px;
     }
 
-    /* Instruction/Help Panel */
     .help-panel {
-      background: #fff8dc;
-      border: 1px solid #e6dbb8;
-      padding: 8px;
-      border-radius: 3px;
-      margin-bottom: 10px;
-      line-height: 1.4;
+      background: #fff8dc; border: 1px solid #e6dbb8; padding: 8px;
+      border-radius: 3px; margin-bottom: 10px; line-height: 1.4;
     }
 
-    /* Buttons */
     .btn {
-      background: var(--xp-btn-gradient);
-      border: 1px solid #7f9db9;
-      border-radius: 3px;
-      padding: 4px 14px;
-      font-family: inherit;
-      font-size: 11px;
-      cursor: pointer;
-      box-shadow: inset 0 1px 0 #ffffff;
+      background: var(--xp-btn-gradient); border: 1px solid #7f9db9;
+      border-radius: 3px; padding: 4px 14px; font-family: inherit;
+      font-size: 11px; cursor: pointer; box-shadow: inset 0 1px 0 #ffffff;
     }
 
-    .btn:hover {
-      border-color: #316ac5;
-      box-shadow: inset 0 0 3px #ffe286;
-    }
-
-    .btn:active {
-      background: var(--xp-btn-active);
-    }
+    .btn:hover { border-color: #316ac5; box-shadow: inset 0 0 3px #ffe286; }
+    .btn:active { background: var(--xp-btn-active); }
 
     .btn-primary {
       background: linear-gradient(180deg, #62b1f6 0%, #227bd6 100%);
-      color: white;
-      border-color: #1a5ca3;
-      font-weight: bold;
+      color: white; border-color: #1a5ca3; font-weight: bold;
     }
 
-    /* Game 1: RANGE Mechanics */
-    .range-display {
-      text-align: center;
-      margin: 15px 0;
-    }
+    /* PINPOINT Specifics */
+    .pinpoint-display { text-align: center; margin: 15px 0; }
+    .pinpoint-val { font-size: 22px; font-weight: bold; color: var(--win-blue-dark); }
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .slider-row label { width: 110px; font-weight: bold; }
+    input[type=range] { flex: 1; }
 
-    .range-val {
-      font-size: 18px;
-      font-weight: bold;
-      color: var(--win-blue-dark);
-    }
-
-    .range-slider-container {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      padding: 0 20px;
-    }
-
-    .slider-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .slider-row label {
-      width: 80px;
-      font-weight: bold;
-    }
-
-    input[type=range] {
-      flex: 1;
-    }
-
-    /* Game 2: OVERLAP Drag & Drop Mechanics */
-    .overlap-board {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      align-items: center;
-    }
-
+    /* OVERLAP Specifics */
+    .overlap-board { display: flex; flex-direction: column; gap: 12px; align-items: center; }
     .card-deck {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      justify-content: center;
-      min-height: 42px;
-      padding: 6px;
-      width: 100%;
-      background: #f0f0f0;
-      border: 1px dashed #a0a0a0;
-      border-radius: 4px;
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;
+      min-height: 42px; padding: 6px; width: 100%; background: #f0f0f0;
+      border: 1px dashed #a0a0a0; border-radius: 4px;
     }
 
     .draggable-card {
-      background: #ffffff;
-      border: 1px solid #7f9db9;
-      padding: 6px 10px;
-      border-radius: 3px;
-      cursor: grab;
-      box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
-      font-weight: bold;
-    }
-
-    .draggable-card:active {
-      cursor: grabbing;
-      background: #ffe286;
+      background: #ffffff; border: 1px solid #7f9db9; padding: 6px 10px;
+      border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-weight: bold;
     }
 
     .venn-container {
-      display: flex;
-      justify-content: center;
-      position: relative;
-      width: 100%;
-      height: 200px;
-      margin-top: 10px;
+      display: flex; justify-content: center; position: relative;
+      width: 100%; height: 200px; margin-top: 10px;
     }
 
     .drop-zone {
-      border: 2px dashed #999;
-      border-radius: 50%;
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      padding-top: 15px;
-      transition: background 0.2s;
+      border: 2px dashed #999; border-radius: 50%; position: absolute;
+      display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+      padding-top: 15px; transition: background 0.2s;
     }
 
-    .drop-zone.drag-over {
-      background: rgba(49, 106, 197, 0.2) !important;
-      border-style: solid;
-    }
-
-    .zone-a {
-      width: 180px;
-      height: 180px;
-      left: 20%;
-      background: rgba(255, 200, 200, 0.3);
-      border-color: #d8432a;
-    }
-
-    .zone-b {
-      width: 180px;
-      height: 180px;
-      right: 20%;
-      background: rgba(200, 200, 255, 0.3);
-      border-color: #227bd6;
-    }
-
+    .drop-zone.drag-over { background: rgba(49, 106, 197, 0.2) !important; border-style: solid; }
+    .zone-a { width: 180px; height: 180px; left: 20%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
+    .zone-b { width: 180px; height: 180px; right: 20%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
     .zone-both {
-      width: 100px;
-      height: 140px;
-      left: calc(50% - 50px);
-      top: 20px;
-      border-radius: 40%;
-      background: rgba(200, 255, 200, 0.4);
-      border-color: var(--xp-green);
-      z-index: 2;
+      width: 100px; height: 140px; left: calc(50% - 50px); top: 20px;
+      border-radius: 40%; background: rgba(200, 255, 200, 0.4); border-color: var(--xp-green); z-index: 2;
     }
 
-    .zone-label {
-      font-weight: bold;
-      font-size: 10px;
-      pointer-events: none;
-      text-align: center;
-      padding: 0 4px;
-    }
+    .zone-label { font-weight: bold; font-size: 10px; pointer-events: none; text-align: center; }
+    .zone-items { display: flex; flex-direction: column; gap: 3px; margin-top: 5px; pointer-events: none; }
+    .zone-items .draggable-card { font-size: 9px; padding: 2px 5px; }
 
-    .zone-items {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      margin-top: 5px;
-      pointer-events: none;
-    }
+    /* CHAIN Specifics */
+    .chain-container { display: flex; flex-direction: column; gap: 8px; }
+    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 6px; border: 1px solid #ccc; border-radius: 3px; }
+    .chain-node.anchor { background: #e1edf9; border-color: #316ac5; font-weight: bold; }
 
-    .zone-items .draggable-card {
-      font-size: 9px;
-      padding: 2px 5px;
-    }
-
-    /* Game 3: CHAIN Mechanics */
-    .chain-container {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .chain-node {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #f5f5f5;
-      padding: 6px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
-
-    .chain-node.anchor {
-      background: #e1edf9;
-      border-color: #316ac5;
-      font-weight: bold;
-    }
-
-    /* XP Taskbar */
+    /* Taskbar */
     .taskbar {
-      height: 30px;
-      background: linear-gradient(180deg, #3182e4 0%, #0055ea 10%, #0040b8 90%, #002681 100%);
-      display: flex;
-      align-items: center;
-      padding: 0 2px;
-      justify-content: space-between;
-      z-index: 100;
+      height: 30px; background: linear-gradient(180deg, #3182e4 0%, #0055ea 10%, #0040b8 90%, #002681 100%);
+      display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 100;
     }
 
     .start-btn {
-      height: 26px;
-      padding: 0 12px 0 8px;
-      background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%);
-      border: 1px solid #ffffff;
-      border-radius: 0 8px 8px 0;
-      color: white;
-      font-weight: bold;
-      font-style: italic;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      box-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-      cursor: pointer;
+      height: 26px; padding: 0 12px 0 8px; background: linear-gradient(180deg, #388e3c 0%, #2e7d32 100%);
+      border: 1px solid #ffffff; border-radius: 0 8px 8px 0; color: white; font-weight: bold;
+      font-style: italic; font-size: 12px; display: flex; align-items: center; gap: 4px; cursor: pointer;
     }
 
-    .system-tray {
-      height: 100%;
-      background: linear-gradient(180deg, #0f8bf3 0%, #0c6ac1 100%);
-      border-left: 1px solid #094a87;
-      padding: 0 8px;
-      display: flex;
-      align-items: center;
-      color: white;
-      font-size: 11px;
-    }
+    .system-tray { height: 100%; background: linear-gradient(180deg, #0f8bf3 0%, #0c6ac1 100%); border-left: 1px solid #094a87; padding: 0 8px; display: flex; align-items: center; color: white; }
   </style>
 </head>
 <body>
 
 <div class="desktop">
   <div class="window">
-    <!-- Title Bar -->
     <div class="title-bar">
-      <div class="title-text">
-        <span>💾</span>
-        <span>DATUM - Daily Puzzle Suite (v1.0.4)</span>
-      </div>
+      <span>💾 DATUM - Daily Puzzle Suite</span>
       <div class="title-controls">
-        <div class="win-btn min">_</div>
-        <div class="win-btn max">□</div>
         <div class="win-btn">✕</div>
       </div>
     </div>
 
-    <!-- Menu Bar -->
     <div class="menu-bar">
-      <div class="menu-item" onclick="alert('DATUM: Daily Logic Game\nResets daily at Midnight UTC.')">File</div>
-      <div class="menu-item" onclick="alert('RANGE: Set bounds\nOVERLAP: Drag into Venn Diagram\nCHAIN: Order intermediate steps')">How to Play</div>
-      <div class="menu-item" onclick="alert('GitHub Sponsors / Ko-fi supported.')">Sponsor</div>
+      <div class="menu-item" onclick="alert('DATUM: Daily Logic Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="alert('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Sort items into Venn diagram.\n3. CHAIN: Order chronologically.')">Rules</div>
     </div>
 
-    <!-- Main Content Body -->
     <div class="window-body">
-      
-      <!-- Tabs -->
       <div class="tabs">
-        <div class="tab active" onclick="switchTab('range')">1. RANGE</div>
+        <div class="tab active" onclick="switchTab('pinpoint')">1. PINPOINT</div>
         <div class="tab" onclick="switchTab('overlap')">2. OVERLAP</div>
         <div class="tab" onclick="switchTab('chain')">3. CHAIN</div>
       </div>
 
-      <!-- GAME 1: RANGE -->
-      <div id="game-range" class="game-panel">
+      <!-- GAME 1: PINPOINT -->
+      <div id="game-pinpoint" class="game-panel">
         <div class="help-panel">
-          <strong>Goal:</strong> Set a lower and upper bound to catch the secret numerical answer inside your window.<br>
-          <strong>Scoring:</strong> The <em>narrower</em> your range, the more points you earn (Up to 1,000 pts). If the true answer is outside your range, you score 0.
+          <strong>Goal:</strong> Choose a single <strong>Target Value</strong> and set your <strong>Tolerance Buffer ($\pm$)</strong>.<br>
+          If the secret answer is inside your buffer ($[\text{Target} - \text{Buffer}, \text{Target} + \text{Buffer}]$), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
         </div>
         <div class="group-box">
-          <div class="group-box-title">Daily Confidence Challenge</div>
-          <p id="range-question" style="font-weight: bold; font-size: 12px;"></p>
+          <div class="group-box-title">Target & Buffer Precision</div>
+          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px;"></p>
           
-          <div class="range-display">
-            Your Selected Range: <br>
-            <span class="range-val" id="range-min-val">1900</span> — <span class="range-val" id="range-max-val">2000</span>
-            <div style="margin-top: 4px; color: #666;">Window Width: <span id="range-width">100</span> units | Est. Risk Multiplier: <span id="range-potential">100</span> pts</div>
+          <div class="pinpoint-display">
+            Target Guess: <span class="pinpoint-val" id="target-display">1985</span><br>
+            Accepted Window: <span id="window-display">1980 — 1990</span> ($\pm$<span id="buffer-display">5</span>)<br>
+            <div style="margin-top: 6px; color: #555;">Est. Potential Payout: <strong id="payout-display">500</strong> pts</div>
           </div>
 
-          <div class="range-slider-container">
+          <div style="padding: 0 15px;">
             <div class="slider-row">
-              <label>Min Bound:</label>
-              <input type="range" id="slider-min" oninput="updateRangeSliders()">
+              <label>Target Value:</label>
+              <input type="range" id="slider-target" oninput="updatePinpointUI()">
             </div>
             <div class="slider-row">
-              <label>Max Bound:</label>
-              <input type="range" id="slider-max" oninput="updateRangeSliders()">
+              <label>Tolerance Buffer ($\pm$):</label>
+              <input type="range" id="slider-buffer" oninput="updatePinpointUI()">
             </div>
           </div>
 
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="submitRange()">Lock In Range</button>
+            <button class="btn btn-primary" onclick="submitPinpoint()">Lock In Target</button>
           </div>
         </div>
       </div>
@@ -492,38 +229,30 @@
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
         <div class="help-panel">
-          <strong>Goal:</strong> Drag each item card from the top bank and drop it into the correct section of the Venn diagram (Circle A, Circle B, or the Overlap in the center).
+          <strong>Goal:</strong> Drag each card into Circle A, Circle B, or BOTH in the middle.
         </div>
         <div class="group-box">
           <div class="group-box-title">Venn Diagram Sorting</div>
-          
           <div class="overlap-board">
-            <!-- Unsorted Cards Deck -->
-            <div class="card-deck" id="card-deck" ondragover="allowDrop(event)" ondrop="drop(event, 'deck')">
-              <!-- Cards injected dynamically -->
-            </div>
+            <div class="card-deck" id="card-deck" ondragover="allowDrop(event)" ondrop="drop(event, 'deck')"></div>
 
-            <!-- Interactive Venn Diagram -->
             <div class="venn-container">
               <div class="drop-zone zone-a" id="zone-A" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'A')">
                 <div class="zone-label" id="label-A">Circle A</div>
                 <div class="zone-items" id="items-A"></div>
               </div>
-
               <div class="drop-zone zone-both" id="zone-BOTH" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'BOTH')">
                 <div class="zone-label">BOTH</div>
                 <div class="zone-items" id="items-BOTH"></div>
               </div>
-
               <div class="drop-zone zone-b" id="zone-B" ondragover="allowDrop(event)" ondragleave="leaveDrop(event)" ondrop="drop(event, 'B')">
                 <div class="zone-label" id="label-B">Circle B</div>
                 <div class="zone-items" id="items-B"></div>
               </div>
             </div>
           </div>
-
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="submitOverlap()">Verify Venn Alignment</button>
+            <button class="btn btn-primary" onclick="submitOverlap()">Verify Diagram</button>
           </div>
         </div>
       </div>
@@ -531,13 +260,11 @@
       <!-- GAME 3: CHAIN -->
       <div id="game-chain" class="game-panel" style="display: none;">
         <div class="help-panel">
-          <strong>Goal:</strong> Arrange the intermediate steps into chronological order between the Start Anchor and End Anchor. Use the UP/DOWN buttons to reorder.
+          <strong>Goal:</strong> Order the steps between the Start and End anchors using ▲/▼ buttons.
         </div>
         <div class="group-box">
           <div class="group-box-title">Sequence Verification</div>
-          <div class="chain-container" id="chain-list">
-            <!-- Nodes injected dynamically -->
-          </div>
+          <div class="chain-container" id="chain-list"></div>
           <div style="text-align: center; margin-top: 15px;">
             <button class="btn btn-primary" onclick="submitChain()">Verify Sequence</button>
           </div>
@@ -548,137 +275,124 @@
   </div>
 </div>
 
-<!-- XP Taskbar -->
 <div class="taskbar">
-  <div class="start-btn">
-    <span>start</span>
-  </div>
-  <div class="system-tray">
-    <span id="clock">12:00 PM</span>
-  </div>
+  <div class="start-btn"><span>start</span></div>
+  <div class="system-tray"><span id="clock">12:00 PM</span></div>
 </div>
 
 <script>
-  // --- DAILY SEEDED PUZZLE DATA ---
-  const puzzleData = {
-    range: {
-      question: "In what year was the original Nintendo Entertainment System (NES) released in North America?",
-      answer: 1985,
-      minLimit: 1970,
-      maxLimit: 2000
-    },
-    overlap: {
-      categoryA: "Directed by Steven Spielberg",
-      categoryB: "Won Best Picture Oscar",
-      items: [
-        { id: "1", text: "Schindler's List", target: "BOTH" },
-        { id: "2", text: "Jurassic Park", target: "A" },
-        { id: "3", text: "Titanic", target: "B" },
-        { id: "4", text: "Jaws", target: "A" }
-      ]
-    },
-    chain: {
-      startAnchor: "1961: Yuri Gagarin becomes first human in space",
-      endAnchor: "1969: Apollo 11 lands on the Moon",
-      steps: [
-        { id: "s1", text: "1962: John Glenn orbits the Earth" },
-        { id: "s2", text: "1963: Valentina Tereshkova becomes first woman in space" },
-        { id: "s3", text: "1965: Alexei Leonov performs first spacewalk" }
-      ]
+  // DAILY REPOSITORY FOR EASY TOPIC UPDATES
+  const DAILY_PUZZLES = {
+    "default": {
+      pinpoint: {
+        question: "In what year was the original Game Boy released by Nintendo in Japan?",
+        answer: 1989, min: 1975, max: 2005, maxBuffer: 15
+      },
+      overlap: {
+        categoryA: "Directed by Steven Spielberg",
+        categoryB: "Won Best Picture Oscar",
+        items: [
+          { id: "1", text: "Schindler's List", target: "BOTH" },
+          { id: "2", text: "Jurassic Park", target: "A" },
+          { id: "3", text: "Titanic", target: "B" },
+          { id: "4", text: "Jaws", target: "A" }
+        ]
+      },
+      chain: {
+        startAnchor: "1961: Yuri Gagarin reaches space",
+        endAnchor: "1969: Apollo 11 lands on Moon",
+        steps: [
+          { id: "s1", text: "1962: John Glenn orbits Earth" },
+          { id: "s2", text: "1963: First woman in space" },
+          { id: "s3", text: "1965: First spacewalk" }
+        ]
+      }
     }
   };
 
-  // State Management
+  let activeData = DAILY_PUZZLES["default"];
   let overlapPlacements = {};
+  let currentChain = [];
 
-  // Initialize App
   window.onload = () => {
     initClock();
-    initRange();
+    initPinpoint();
     initOverlap();
     initChain();
   };
 
   function initClock() {
     const update = () => {
-      const now = new Date();
-      document.getElementById('clock').innerText = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      document.getElementById('clock').innerText = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     };
-    update();
-    setInterval(update, 10000);
+    update(); setInterval(update, 10000);
   }
 
-  function switchTab(tabName) {
+  function switchTab(tab) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.game-panel').forEach(p => p.style.display = 'none');
     
-    if (tabName === 'range') {
+    if (tab === 'pinpoint') {
       document.querySelectorAll('.tab')[0].classList.add('active');
-      document.getElementById('game-range').style.display = 'block';
-    } else if (tabName === 'overlap') {
+      document.getElementById('game-pinpoint').style.display = 'block';
+    } else if (tab === 'overlap') {
       document.querySelectorAll('.tab')[1].classList.add('active');
       document.getElementById('game-overlap').style.display = 'block';
-    } else if (tabName === 'chain') {
+    } else if (tab === 'chain') {
       document.querySelectorAll('.tab')[2].classList.add('active');
       document.getElementById('game-chain').style.display = 'block';
     }
   }
 
-  /* --- 1. RANGE GAME LOGIC --- */
-  function initRange() {
-    const q = puzzleData.range;
-    document.getElementById('range-question').innerText = q.question;
-    
-    const sMin = document.getElementById('slider-min');
-    const sMax = document.getElementById('slider-max');
-    
-    sMin.min = q.minLimit; sMin.max = q.maxLimit; sMin.value = q.minLimit + 5;
-    sMax.min = q.minLimit; sMax.max = q.maxLimit; sMax.value = q.maxLimit - 5;
-    
-    updateRangeSliders();
+  /* 1. PINPOINT LOGIC */
+  function initPinpoint() {
+    const data = activeData.pinpoint;
+    document.getElementById('pinpoint-question').innerText = data.question;
+
+    const sTarget = document.getElementById('slider-target');
+    const sBuffer = document.getElementById('slider-buffer');
+
+    sTarget.min = data.min; sTarget.max = data.max; sTarget.value = Math.floor((data.min + data.max) / 2);
+    sBuffer.min = 0; sBuffer.max = data.maxBuffer; sBuffer.value = Math.floor(data.maxBuffer / 2);
+
+    updatePinpointUI();
   }
 
-  function updateRangeSliders() {
-    let minVal = parseInt(document.getElementById('slider-min').value);
-    let maxVal = parseInt(document.getElementById('slider-max').value);
+  function updatePinpointUI() {
+    const target = parseInt(document.getElementById('slider-target').value);
+    const buffer = parseInt(document.getElementById('slider-buffer').value);
+    const maxBuffer = activeData.pinpoint.maxBuffer;
 
-    if (minVal >= maxVal) {
-      minVal = maxVal - 1;
-      document.getElementById('slider-min').value = minVal;
-    }
+    document.getElementById('target-display').innerText = target;
+    document.getElementById('buffer-display').innerText = buffer;
+    document.getElementById('window-display').innerText = `${target - buffer} — ${target + buffer}`;
 
-    const width = maxVal - minVal;
-    const potentialScore = Math.max(10, Math.round(1000 * (1 - (width / (puzzleData.range.maxLimit - puzzleData.range.minLimit)))));
-
-    document.getElementById('range-min-val').innerText = minVal;
-    document.getElementById('range-max-val').innerText = maxVal;
-    document.getElementById('range-width').innerText = width;
-    document.getElementById('range-potential').innerText = potentialScore;
+    // Scoring formula: 1000 max, scales down as buffer grows
+    const potential = Math.round(1000 * (1 - (buffer / (maxBuffer + 1))));
+    document.getElementById('payout-display').innerText = potential;
   }
 
-  function submitRange() {
-    const minVal = parseInt(document.getElementById('slider-min').value);
-    const maxVal = parseInt(document.getElementById('slider-max').value);
-    const ans = puzzleData.range.answer;
+  function submitPinpoint() {
+    const target = parseInt(document.getElementById('slider-target').value);
+    const buffer = parseInt(document.getElementById('slider-buffer').value);
+    const answer = activeData.pinpoint.answer;
 
-    if (ans >= minVal && ans <= maxVal) {
-      const width = maxVal - minVal;
-      const score = Math.max(10, Math.round(1000 * (1 - (width / (puzzleData.range.maxLimit - puzzleData.range.minLimit)))));
-      alert(`SUCCESS! The correct answer was ${ans}.\nYou caught it inside your range!\nScore: ${score} pts`);
+    if (Math.abs(answer - target) <= buffer) {
+      const potential = Math.round(1000 * (1 - (buffer / (activeData.pinpoint.maxBuffer + 1))));
+      alert(`BULLSEYE! Secret answer was ${answer}.\nIt fell within your buffer [${target-buffer}, ${target+buffer}].\nScore: ${potential} pts!`);
     } else {
-      alert(`MISSED! The correct answer was ${ans}.\nIt was outside your range (${minVal} - ${maxVal}).\nScore: 0 pts`);
+      alert(`MISSED! Secret answer was ${answer}.\nYour buffer [${target-buffer}, ${target+buffer}] missed it.\nScore: 0 pts.`);
     }
   }
 
-  /* --- 2. OVERLAP DRAG & DROP LOGIC --- */
+  /* 2. OVERLAP LOGIC */
   function initOverlap() {
-    document.getElementById('label-A').innerText = puzzleData.overlap.categoryA;
-    document.getElementById('label-B').innerText = puzzleData.overlap.categoryB;
-
+    document.getElementById('label-A').innerText = activeData.overlap.categoryA;
+    document.getElementById('label-B').innerText = activeData.overlap.categoryB;
     const deck = document.getElementById('card-deck');
     deck.innerHTML = '';
 
-    puzzleData.overlap.items.forEach(item => {
+    activeData.overlap.items.forEach(item => {
       const card = document.createElement('div');
       card.className = 'draggable-card';
       card.innerText = item.text;
@@ -690,115 +404,66 @@
     });
   }
 
-  function allowDrop(e) {
+  function allowDrop(e) { e.preventDefault(); if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.add('drag-over'); }
+  function leaveDrop(e) { if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over'); }
+
+  function drop(e, zone) {
     e.preventDefault();
-    if (e.currentTarget.classList.contains('drop-zone')) {
-      e.currentTarget.classList.add('drag-over');
-    }
-  }
-
-  function leaveDrop(e) {
-    if (e.currentTarget.classList.contains('drop-zone')) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-  }
-
-  function drop(e, targetZone) {
-    e.preventDefault();
-    if (e.currentTarget.classList.contains('drop-zone')) {
-      e.currentTarget.classList.remove('drag-over');
-    }
-
-    const itemId = e.dataTransfer.getData('text/plain');
-    const card = document.getElementById(`card-${itemId}`);
-    
+    if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over');
+    const id = e.dataTransfer.getData('text/plain');
+    const card = document.getElementById(`card-${id}`);
     if (!card) return;
 
-    overlapPlacements[itemId] = targetZone;
-
-    if (targetZone === 'deck') {
-      document.getElementById('card-deck').appendChild(card);
-    } else {
-      document.getElementById(`items-${targetZone}`).appendChild(card);
-    }
+    overlapPlacements[id] = zone;
+    if (zone === 'deck') document.getElementById('card-deck').appendChild(card);
+    else document.getElementById(`items-${zone}`).appendChild(card);
   }
 
   function submitOverlap() {
     let correct = 0;
-    const total = puzzleData.overlap.items.length;
-
-    puzzleData.overlap.items.forEach(item => {
-      if (overlapPlacements[item.id] === item.target) {
-        correct++;
-      }
-    });
-
-    alert(`OVERLAP EVALUATION:\nYou accurately placed ${correct} out of ${total} cards!`);
+    activeData.overlap.items.forEach(item => { if (overlapPlacements[item.id] === item.target) correct++; });
+    alert(`OVERLAP RESULT: ${correct} / ${activeData.overlap.items.length} cards placed correctly!`);
   }
 
-  /* --- 3. CHAIN LOGIC --- */
-  let currentChain = [];
-
+  /* 3. CHAIN LOGIC */
   function initChain() {
-    currentChain = [...puzzleData.chain.steps];
+    currentChain = [...activeData.chain.steps];
     renderChain();
   }
 
   function renderChain() {
-    const container = document.getElementById('chain-list');
-    container.innerHTML = '';
+    const c = document.getElementById('chain-list');
+    c.innerHTML = '';
 
-    // Start Anchor
-    const startNode = document.createElement('div');
-    startNode.className = 'chain-node anchor';
-    startNode.innerText = `START: ${puzzleData.chain.startAnchor}`;
-    container.appendChild(startNode);
+    const start = document.createElement('div');
+    start.className = 'chain-node anchor';
+    start.innerText = `START: ${activeData.chain.startAnchor}`;
+    c.appendChild(start);
 
-    // Draggable / Moveable Intermediate Steps
     currentChain.forEach((step, idx) => {
-      const node = document.createElement('div');
-      node.className = 'chain-node';
-      node.style.justifyContent = 'space-between';
-      node.innerHTML = `
-        <span>${step.text}</span>
-        <div>
-          <button class="btn" onclick="moveChain(${idx}, -1)">▲</button>
-          <button class="btn" onclick="moveChain(${idx}, 1)">▼</button>
-        </div>
-      `;
-      container.appendChild(node);
+      const n = document.createElement('div');
+      n.className = 'chain-node';
+      n.style.justifyContent = 'space-between';
+      n.innerHTML = `<span>${step.text}</span><div><button class="btn" onclick="moveChain(${idx},-1)">▲</button><button class="btn" onclick="moveChain(${idx},1)">▼</button></div>`;
+      c.appendChild(n);
     });
 
-    // End Anchor
-    const endNode = document.createElement('div');
-    endNode.className = 'chain-node anchor';
-    endNode.innerText = `END: ${puzzleData.chain.endAnchor}`;
-    container.appendChild(endNode);
+    const end = document.createElement('div');
+    end.className = 'chain-node anchor';
+    end.innerText = `END: ${activeData.chain.endAnchor}`;
+    c.appendChild(end);
   }
 
   function moveChain(idx, dir) {
-    const newIdx = idx + dir;
-    if (newIdx < 0 || newIdx >= currentChain.length) return;
-    const temp = currentChain[idx];
-    currentChain[idx] = currentChain[newIdx];
-    currentChain[newIdx] = temp;
+    const next = idx + dir;
+    if (next < 0 || next >= currentChain.length) return;
+    [currentChain[idx], currentChain[next]] = [currentChain[next], currentChain[idx]];
     renderChain();
   }
 
   function submitChain() {
-    let isCorrect = true;
-    for (let i = 0; i < currentChain.length; i++) {
-      if (currentChain[i].id !== puzzleData.chain.steps[i].id) {
-        isCorrect = false;
-        break;
-      }
-    }
-
-    if (isCorrect) {
-      alert('CHAIN VERIFIED! Sequence is perfectly chronological.');
-    } else {
-      alert('SEQUENCE ERROR: One or more steps are in the wrong order.');
-    }
+    let ok = currentChain.every((s, i) => s.id === activeData.chain.steps[i].id);
+    alert(ok ? 'CHAIN VERIFIED! Correct sequence.' : 'SEQUENCE ERROR! Incorrect order.');
   }
 </script>
 </body>
