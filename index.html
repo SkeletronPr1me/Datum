@@ -126,6 +126,7 @@
 
     .btn:hover { border-color: #316ac5; box-shadow: inset 0 0 3px #ffe286; }
     .btn:active { background: var(--xp-btn-active); }
+    .btn:disabled { color: #888; background: #ccc; cursor: not-allowed; }
 
     .btn-primary {
       background: linear-gradient(180deg, #62b1f6 0%, #227bd6 100%);
@@ -281,7 +282,7 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.0.6\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.0.7\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
       <div class="menu-item" onclick="showModal('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag or click items into Venn diagram.\n3. CHAIN: Sequence steps chronologically.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
@@ -310,7 +311,7 @@
 
       <!-- GAME 1: PINPOINT -->
       <div id="game-pinpoint" class="game-panel">
-        <div class="help-panel">
+        <div class="help-panel" id="pinpoint-help">
           <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer (&plusmn;)</strong>.<br>
           If the answer falls inside your target buffer (from Target - Buffer to Target + Buffer), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
         </div>
@@ -324,7 +325,7 @@
             <div style="margin-top: 6px; color: #555;">Est. Potential Payout: <strong id="payout-display">500</strong> pts</div>
           </div>
 
-          <div style="padding: 0 15px;">
+          <div style="padding: 0 15px;" id="pinpoint-controls">
             <div class="slider-row">
               <label>Target Value:</label>
               <input type="range" id="slider-target" oninput="updatePinpointUI()">
@@ -336,14 +337,14 @@
           </div>
 
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="submitPinpoint()">Lock In Target</button>
+            <button class="btn btn-primary" id="btn-submit-pinpoint" onclick="submitPinpoint()">Lock In Target</button>
           </div>
         </div>
       </div>
 
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
-        <div class="help-panel">
+        <div class="help-panel" id="overlap-help">
           <strong>Goal:</strong> Drag cards into the Venn diagram zones (or click a card to cycle through zones: Bank &rarr; A &rarr; Both &rarr; B &rarr; Bank).
         </div>
         <div class="group-box">
@@ -367,21 +368,21 @@
             </div>
           </div>
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="submitOverlap()">Verify Diagram</button>
+            <button class="btn btn-primary" id="btn-submit-overlap" onclick="submitOverlap()">Verify Diagram</button>
           </div>
         </div>
       </div>
 
       <!-- GAME 3: CHAIN -->
       <div id="game-chain" class="game-panel" style="display: none;">
-        <div class="help-panel">
+        <div class="help-panel" id="chain-help">
           <strong>Goal:</strong> Order the intermediate steps chronologically between the Start and End anchors using the ▲/▼ controls.
         </div>
         <div class="group-box">
           <div class="group-box-title">Sequence Verification</div>
           <div class="chain-container" id="chain-list"></div>
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" onclick="submitChain()">Verify Sequence</button>
+            <button class="btn btn-primary" id="btn-submit-chain" onclick="submitChain()">Verify Sequence</button>
           </div>
         </div>
       </div>
@@ -432,45 +433,50 @@
 </div>
 
 <script>
+  // DAILY REPOSITORY WITH OCTOBER 10, 2026 CONTENT
   const DAILY_PUZZLES = {
-    "default": {
+    "2026-10-10": {
       pinpoint: {
-        question: "In what year was the original Game Boy released by Nintendo in Japan?",
-        answer: 1989, min: 1975, max: 2005, maxBuffer: 15
+        question: "In what year was the World Wide Web first publicly introduced by Tim Berners-Lee?",
+        answer: 1991, min: 1975, max: 2005, maxBuffer: 15
       },
       overlap: {
-        categoryA: "Directed by Steven Spielberg",
-        categoryB: "Won Best Picture Oscar",
+        categoryA: "Formed in the 1960s",
+        categoryB: "Rock & Roll Hall of Fame Inductee",
         items: [
-          { id: "1", text: "Schindler's List", target: "BOTH" },
-          { id: "2", text: "Jurassic Park", target: "A" },
-          { id: "3", text: "Titanic", target: "B" },
-          { id: "4", text: "Jaws", target: "A" }
+          { id: "1", text: "The Beatles", target: "BOTH" },
+          { id: "2", text: "Led Zeppelin", target: "BOTH" },
+          { id: "3", text: "Nirvana", target: "B" },
+          { id: "4", text: "The Monkees", target: "A" }
         ]
       },
       chain: {
-        startAnchor: "1961: Yuri Gagarin reaches space",
-        endAnchor: "1969: Apollo 11 lands on Moon",
+        startAnchor: "1962: Mariner 2 flies past Venus",
+        endAnchor: "1977: Voyager 1 launches",
         steps: [
-          { id: "s1", text: "1962: John Glenn orbits Earth" },
-          { id: "s2", text: "1963: First woman in space" },
-          { id: "s3", text: "1965: First spacewalk" }
+          { id: "s1", text: "1965: Mariner 4 flies past Mars" },
+          { id: "s2", text: "1970: Venera 7 lands on Venus" },
+          { id: "s3", text: "1973: Pioneer 10 passes Jupiter" }
         ]
       }
     }
   };
 
-  let activeData = DAILY_PUZZLES["default"];
+  // Fallback to today or latest
+  const todayKey = new Date().toISOString().split('T')[0];
+  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-10"];
+
   let overlapPlacements = {};
   let currentChain = [];
-  let dailyScores = { pinpoint: 0, overlap: 0, chain: 0 };
+  let dailyScores = { pinpoint: null, overlap: null, chain: null };
 
   window.onload = () => {
     initClock();
+    loadScoreHistory();
     initPinpoint();
     initOverlap();
     initChain();
-    loadScoreHistory();
+    checkIfCompleted();
   };
 
   function initClock() {
@@ -564,9 +570,10 @@
       showModal(`MISSED!\nSecret answer was ${answer}.\nScore: 0 pts.`, "PINPOINT Result");
     }
     saveTodayScore();
+    lockGameIfComplete();
   }
 
-  /* 2. OVERLAP LOGIC (Drag-and-Drop + Click Cycle) */
+  /* 2. OVERLAP LOGIC */
   function initOverlap() {
     document.getElementById('label-A').innerText = activeData.overlap.categoryA;
     document.getElementById('label-B').innerText = activeData.overlap.categoryB;
@@ -590,8 +597,7 @@
   function cycleCardZone(itemId) {
     const currentZone = overlapPlacements[itemId];
     const nextIdx = (zoneSequence.indexOf(currentZone) + 1) % zoneSequence.length;
-    const nextZone = zoneSequence[nextIdx];
-    moveCardToZone(itemId, nextZone);
+    moveCardToZone(itemId, zoneSequence[nextIdx]);
   }
 
   function moveCardToZone(itemId, zone) {
@@ -621,6 +627,7 @@
     dailyScores.overlap = Math.round((correct / activeData.overlap.items.length) * 1000);
     showModal(`OVERLAP RESULT:\n${correct} / ${activeData.overlap.items.length} cards placed correctly!\nScore: ${dailyScores.overlap} pts!`, "OVERLAP Evaluation");
     saveTodayScore();
+    lockGameIfComplete();
   }
 
   /* 3. CHAIN LOGIC */
@@ -664,18 +671,58 @@
     dailyScores.chain = ok ? 1000 : 0;
     showModal(ok ? 'CHAIN VERIFIED!\nSequence correct (1,000 pts).' : 'SEQUENCE ERROR!\nIncorrect order (0 pts).', "CHAIN Evaluation");
     saveTodayScore();
+    lockGameIfComplete();
   }
 
-  /* LOCAL STORAGE & PERCENTILE CALCULATOR */
+  /* STORAGE & LOCK SYSTEM */
   function saveTodayScore() {
-    const today = new Date().toISOString().split('T')[0];
-    const total = dailyScores.pinpoint + dailyScores.overlap + dailyScores.chain;
-    
-    let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
-    history[today] = total;
-    localStorage.setItem('datum_scores', JSON.stringify(history));
+    const today = todayKey;
+    const p = dailyScores.pinpoint || 0;
+    const o = dailyScores.overlap || 0;
+    const c = dailyScores.chain || 0;
+    const total = p + o + c;
+
+    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
+    history[today] = { pinpoint: p, overlap: o, chain: c, total: total };
+    localStorage.setItem('datum_scores_detail', JSON.stringify(history));
+
+    // Also legacy total for chart
+    let legacy = JSON.parse(localStorage.getItem('datum_scores') || '{}');
+    legacy[today] = total;
+    localStorage.setItem('datum_scores', JSON.stringify(legacy));
 
     updatePercentileDisplay(total);
+  }
+
+  function loadScoreHistory() {
+    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
+    if (history[todayKey]) {
+      dailyScores = history[todayKey];
+      updatePercentileDisplay(dailyScores.total);
+    }
+  }
+
+  function checkIfCompleted() {
+    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
+    if (history[todayKey] && history[todayKey].pinpoint !== null && history[todayKey].overlap !== null && history[todayKey].chain !== null) {
+      lockEverything("You have already completed today's challenges.\nPlease return tomorrow for new challenges!");
+    }
+  }
+
+  function lockGameIfComplete() {
+    if (dailyScores.pinpoint !== null && dailyScores.overlap !== null && dailyScores.chain !== null) {
+      lockEverything("All daily challenges completed!\nPlease return tomorrow for new challenges.");
+    }
+  }
+
+  function lockEverything(message) {
+    document.getElementById('btn-submit-pinpoint').disabled = true;
+    document.getElementById('btn-submit-overlap').disabled = true;
+    document.getElementById('btn-submit-chain').disabled = true;
+
+    document.getElementById('pinpoint-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
+    document.getElementById('overlap-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
+    document.getElementById('chain-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
   }
 
   function updatePercentileDisplay(total) {
@@ -684,15 +731,7 @@
     if (total >= 2800) pct = "Top 3% (Optimal)";
     else if (total >= 2400) pct = "Top 12% (Superior)";
     else if (total >= 1800) pct = "Top 35% (Nominal)";
-    
     document.getElementById('stat-percentile').innerText = pct;
-  }
-
-  function loadScoreHistory() {
-    const today = new Date().toISOString().split('T')[0];
-    let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
-    let total = history[today] || 0;
-    updatePercentileDisplay(total);
   }
 
   function renderChart() {
@@ -700,7 +739,6 @@
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw Gridlines
     ctx.strokeStyle = '#004400';
     ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 30) {
@@ -710,10 +748,9 @@
       ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
     }
 
-    // Draw Score Line
     let history = JSON.parse(localStorage.getItem('datum_scores') || '{}');
     let scores = Object.values(history).slice(-10);
-    if (scores.length < 2) scores = [1200, 2100, 1800, 2750]; // Sample curve preview
+    if (scores.length < 2) scores = [1200, 2400, 1900, 2850];
 
     ctx.strokeStyle = '#00ff00';
     ctx.lineWidth = 2;
