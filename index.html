@@ -14,6 +14,7 @@
       --xp-btn-gradient: linear-gradient(180deg, #ffffff 0%, #ece9d8 85%, #d8d0c5 100%);
       --xp-btn-active: linear-gradient(180deg, #d8d0c5 0%, #ece9d8 85%, #ffffff 100%);
       --xp-green: #2e8b57;
+      --xp-lock-bg: #fff0f0;
     }
 
     * { box-sizing: border-box; user-select: none; }
@@ -26,7 +27,6 @@
       height: 100vh; display: flex; flex-direction: column; overflow: hidden;
     }
 
-    /* Desktop Environment */
     .desktop {
       flex: 1; padding: 16px; display: flex;
       justify-content: center; align-items: center; position: relative;
@@ -46,7 +46,6 @@
     .icon:hover { filter: brightness(1.2); }
     .icon-img { font-size: 32px; margin-bottom: 4px; }
 
-    /* Main App Window */
     .window {
       width: 700px; max-width: 95vw; background: var(--win-bg);
       border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
@@ -95,12 +94,19 @@
       padding: 5px 14px; background: #d8d0c5;
       border: 1px solid var(--win-border-dark); border-bottom: none;
       border-radius: 3px 3px 0 0; cursor: pointer; font-weight: bold;
+      display: flex; align-items: center; gap: 6px;
     }
 
     .tab.active {
       background: var(--win-bg); border-color: var(--win-blue);
       border-bottom: 1px solid var(--win-bg); margin-bottom: -1px; color: var(--win-blue-dark);
     }
+
+    .tab-badge {
+      font-size: 9px; padding: 1px 4px; border-radius: 3px;
+      background: #888; color: white;
+    }
+    .tab-badge.done { background: var(--xp-green); }
 
     .group-box {
       border: 1px solid #d0ccc0; border-radius: 4px; padding: 14px;
@@ -117,16 +123,21 @@
       border-radius: 3px; margin-bottom: 10px; line-height: 1.4;
     }
 
-    /* XP Controls */
+    .lock-notice {
+      background: var(--xp-lock-bg); border: 1px solid #e8a0a0;
+      color: #900; padding: 10px 14px; border-radius: 4px; font-weight: bold;
+      text-align: center; margin-bottom: 12px; display: none; line-height: 1.5;
+    }
+
     .btn {
       background: var(--xp-btn-gradient); border: 1px solid #7f9db9;
       border-radius: 3px; padding: 5px 16px; font-family: inherit;
       font-size: 11px; cursor: pointer; box-shadow: inset 0 1px 0 #ffffff;
     }
 
-    .btn:hover { border-color: #316ac5; box-shadow: inset 0 0 3px #ffe286; }
-    .btn:active { background: var(--xp-btn-active); }
-    .btn:disabled { color: #888; background: #ccc; cursor: not-allowed; }
+    .btn:hover:not(:disabled) { border-color: #316ac5; box-shadow: inset 0 0 3px #ffe286; }
+    .btn:active:not(:disabled) { background: var(--xp-btn-active); }
+    .btn:disabled { color: #888; background: #e0e0e0; border-color: #b0b0b0; cursor: not-allowed; opacity: 0.7; }
 
     .btn-primary {
       background: linear-gradient(180deg, #62b1f6 0%, #227bd6 100%);
@@ -151,9 +162,11 @@
     .draggable-card {
       background: #ffffff; border: 1px solid #7f9db9; padding: 6px 12px;
       border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-weight: bold;
+      transition: opacity 0.2s, transform 0.1s;
     }
 
     .draggable-card:active { cursor: grabbing; }
+    .draggable-card.locked-card { cursor: default; opacity: 0.85; }
 
     .venn-container {
       display: flex; justify-content: center; position: relative;
@@ -191,7 +204,6 @@
 
     canvas { background: #000; border: 1px solid #00ff00; }
 
-    /* In-App Retro Dialog Modal */
     .inapp-modal-overlay {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0, 0, 0, 0.3); display: none;
@@ -209,7 +221,6 @@
       display: flex; flex-direction: column; gap: 12px;
     }
 
-    /* Start Menu Pop-up */
     .start-menu {
       position: absolute; bottom: 30px; left: 0; width: 220px;
       background: var(--win-bg); border: 2px solid var(--win-blue);
@@ -229,7 +240,6 @@
 
     .start-menu-item:hover { background: #316ac5; color: white; }
 
-    /* Taskbar */
     .taskbar {
       height: 30px; background: linear-gradient(180deg, #3182e4 0%, #0055ea 10%, #0040b8 90%, #002681 100%);
       display: flex; align-items: center; padding: 0 2px; justify-content: space-between; z-index: 150;
@@ -250,7 +260,7 @@
 <body>
 
 <div class="desktop">
-  <!-- Desktop Shortcuts arranged vertically -->
+  <!-- Vertically stacked desktop icons -->
   <div class="desktop-shortcuts">
     <div class="icon" onclick="switchTab('pinpoint')">
       <div class="icon-img">🎯</div>
@@ -270,10 +280,10 @@
     </div>
   </div>
 
-  <!-- Main Application Window -->
+  <!-- Main XP Application Window -->
   <div class="window" id="app-window">
     <div class="title-bar">
-      <span>💾 DATUM - Daily Logic Suite</span>
+      <span>💾 DATUM - Daily Logic Engine</span>
       <div class="title-controls">
         <div class="win-btn">_</div>
         <div class="win-btn">□</div>
@@ -282,8 +292,8 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.0.7\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
-      <div class="menu-item" onclick="showModal('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag or click items into Venn diagram.\n3. CHAIN: Sequence steps chronologically.')">How to Play</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.0.8\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Sort items into Venn diagram zones.\n3. CHAIN: Order event cards chronologically (no dates provided!).')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
 
@@ -296,24 +306,39 @@
             <div class="win-btn close" onclick="closeModal()">✕</div>
           </div>
           <div class="inapp-modal-body">
-            <div id="modal-text" style="white-space: pre-line;">Message here</div>
+            <div id="modal-text" style="white-space: pre-line;">Notice text</div>
             <div><button class="btn btn-primary" onclick="closeModal()" style="width: 100px;">OK</button></div>
           </div>
         </div>
       </div>
 
+      <!-- Tab Navigation Header -->
       <div class="tabs">
-        <div class="tab active" id="tab-pinpoint" onclick="switchTab('pinpoint')">1. PINPOINT</div>
-        <div class="tab" id="tab-overlap" onclick="switchTab('overlap')">2. OVERLAP</div>
-        <div class="tab" id="tab-chain" onclick="switchTab('chain')">3. CHAIN</div>
-        <div class="tab" id="tab-stats" onclick="switchTab('stats')">4. PERFORMANCE</div>
+        <div class="tab active" id="tab-pinpoint" onclick="switchTab('pinpoint')">
+          <span>1. PINPOINT</span>
+          <span class="tab-badge" id="badge-pinpoint">--</span>
+        </div>
+        <div class="tab" id="tab-overlap" onclick="switchTab('overlap')">
+          <span>2. OVERLAP</span>
+          <span class="tab-badge" id="badge-overlap">--</span>
+        </div>
+        <div class="tab" id="tab-chain" onclick="switchTab('chain')">
+          <span>3. CHAIN</span>
+          <span class="tab-badge" id="badge-chain">--</span>
+        </div>
+        <div class="tab" id="tab-stats" onclick="switchTab('stats')">
+          <span>4. PERFORMANCE</span>
+        </div>
       </div>
 
       <!-- GAME 1: PINPOINT -->
       <div id="game-pinpoint" class="game-panel">
+        <div class="lock-notice" id="lock-notice-pinpoint">
+          🔒 Puzzle completed! Score: <span id="lock-score-pinpoint">0</span> pts. Please return tomorrow for new challenges.
+        </div>
         <div class="help-panel" id="pinpoint-help">
           <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer (&plusmn;)</strong>.<br>
-          If the answer falls inside your target buffer (from Target - Buffer to Target + Buffer), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
+          If the true answer falls inside your target buffer (from Target - Buffer to Target + Buffer), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
         </div>
         <div class="group-box">
           <div class="group-box-title">Target & Buffer Precision</div>
@@ -344,8 +369,11 @@
 
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
+        <div class="lock-notice" id="lock-notice-overlap">
+          🔒 Puzzle completed! Score: <span id="lock-score-overlap">0</span> pts. Please return tomorrow for new challenges.
+        </div>
         <div class="help-panel" id="overlap-help">
-          <strong>Goal:</strong> Drag cards into the Venn diagram zones (or click a card to cycle through zones: Bank &rarr; A &rarr; Both &rarr; B &rarr; Bank).
+          <strong>Goal:</strong> Drag cards into the Venn diagram zones (or click a card to cycle through zones: Deck &rarr; A &rarr; Both &rarr; B &rarr; Deck).
         </div>
         <div class="group-box">
           <div class="group-box-title">Venn Diagram Sorting</div>
@@ -375,11 +403,14 @@
 
       <!-- GAME 3: CHAIN -->
       <div id="game-chain" class="game-panel" style="display: none;">
+        <div class="lock-notice" id="lock-notice-chain">
+          🔒 Puzzle completed! Score: <span id="lock-score-chain">0</span> pts. Please return tomorrow for new challenges.
+        </div>
         <div class="help-panel" id="chain-help">
-          <strong>Goal:</strong> Order the intermediate steps chronologically between the Start and End anchors using the ▲/▼ controls.
+          <strong>Goal:</strong> Order the intermediate events chronologically between the Start and End anchors using ▲/▼ buttons. <em>Note: No dates are provided—deduce the timeline from the historical events!</em>
         </div>
         <div class="group-box">
-          <div class="group-box-title">Sequence Verification</div>
+          <div class="group-box-title">Chronological Sequence (No Dates)</div>
           <div class="chain-container" id="chain-list"></div>
           <div style="text-align: center; margin-top: 15px;">
             <button class="btn btn-primary" id="btn-submit-chain" onclick="submitChain()">Verify Sequence</button>
@@ -395,7 +426,7 @@
         <div class="group-box">
           <div class="group-box-title">Score History & Percentile</div>
           <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <div>Today's Total: <strong id="stat-today-score">0 / 3000</strong></div>
+            <div>Today's Total Score: <strong id="stat-today-score">0 / 3000</strong></div>
             <div>Estimated Rank: <strong id="stat-percentile" style="color: var(--win-blue-dark);">--</strong></div>
           </div>
           <div class="chart-box">
@@ -433,7 +464,8 @@
 </div>
 
 <script>
-  // DAILY REPOSITORY WITH OCTOBER 10, 2026 CONTENT
+  // DAILY REPOSITORY - OCTOBER 10, 2026 CONTENT
+  // NOTE: CHAIN contains NO DATES in event descriptions!
   const DAILY_PUZZLES = {
     "2026-10-10": {
       pinpoint: {
@@ -451,32 +483,32 @@
         ]
       },
       chain: {
-        startAnchor: "1962: Mariner 2 flies past Venus",
-        endAnchor: "1977: Voyager 1 launches",
+        startAnchor: "Mariner 2 flies past Venus",
+        endAnchor: "Voyager 1 launches towards outer planets",
         steps: [
-          { id: "s1", text: "1965: Mariner 4 flies past Mars" },
-          { id: "s2", text: "1970: Venera 7 lands on Venus" },
-          { id: "s3", text: "1973: Pioneer 10 passes Jupiter" }
+          { id: "s1", text: "Mariner 4 completes first successful Mars flyby" },
+          { id: "s2", text: "Venera 7 becomes first probe to land on Venus" },
+          { id: "s3", text: "Pioneer 10 completes first flyby of Jupiter" }
         ]
       }
     }
   };
 
-  // Fallback to today or latest
   const todayKey = new Date().toISOString().split('T')[0];
   const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-10"];
 
   let overlapPlacements = {};
   let currentChain = [];
   let dailyScores = { pinpoint: null, overlap: null, chain: null };
+  let lockState = { pinpoint: false, overlap: false, chain: false };
 
   window.onload = () => {
     initClock();
-    loadScoreHistory();
+    loadTodayState();
     initPinpoint();
     initOverlap();
     initChain();
-    checkIfCompleted();
+    applyLockStates();
   };
 
   function initClock() {
@@ -545,6 +577,7 @@
   }
 
   function updatePinpointUI() {
+    if (lockState.pinpoint) return;
     const target = parseInt(document.getElementById('slider-target').value);
     const buffer = parseInt(document.getElementById('slider-buffer').value);
     const maxBuffer = activeData.pinpoint.maxBuffer;
@@ -558,19 +591,21 @@
   }
 
   function submitPinpoint() {
+    if (lockState.pinpoint) return;
     const target = parseInt(document.getElementById('slider-target').value);
     const buffer = parseInt(document.getElementById('slider-buffer').value);
     const answer = activeData.pinpoint.answer;
 
     if (Math.abs(answer - target) <= buffer) {
       dailyScores.pinpoint = Math.round(1000 * (1 - (buffer / (activeData.pinpoint.maxBuffer + 1))));
-      showModal(`BULLSEYE!\nSecret answer was ${answer}.\nScore: ${dailyScores.pinpoint} pts!`, "PINPOINT Result");
+      showModal(`BULLSEYE!\nSecret answer was ${answer}.\nScore: ${dailyScores.pinpoint} pts!`, "PINPOINT Evaluation");
     } else {
       dailyScores.pinpoint = 0;
-      showModal(`MISSED!\nSecret answer was ${answer}.\nScore: 0 pts.`, "PINPOINT Result");
+      showModal(`MISSED!\nSecret answer was ${answer}.\nScore: 0 pts.`, "PINPOINT Evaluation");
     }
-    saveTodayScore();
-    lockGameIfComplete();
+    
+    lockGame('pinpoint', dailyScores.pinpoint);
+    saveState();
   }
 
   /* 2. OVERLAP LOGIC */
@@ -586,8 +621,13 @@
       card.innerText = item.text;
       card.id = `card-${item.id}`;
       card.draggable = true;
-      card.ondragstart = (e) => e.dataTransfer.setData('text/plain', item.id);
-      card.onclick = () => cycleCardZone(item.id);
+      card.ondragstart = (e) => {
+        if (lockState.overlap) { e.preventDefault(); return; }
+        e.dataTransfer.setData('text/plain', item.id);
+      };
+      card.onclick = () => {
+        if (!lockState.overlap) cycleCardZone(item.id);
+      };
       deck.appendChild(card);
       overlapPlacements[item.id] = 'deck';
     });
@@ -611,10 +651,15 @@
     }
   }
 
-  function allowDrop(e) { e.preventDefault(); if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.add('drag-over'); }
+  function allowDrop(e) { 
+    if (lockState.overlap) return;
+    e.preventDefault(); 
+    if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.add('drag-over'); 
+  }
   function leaveDrop(e) { if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over'); }
 
   function drop(e, zone) {
+    if (lockState.overlap) return;
     e.preventDefault();
     if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over');
     const id = e.dataTransfer.getData('text/plain');
@@ -622,15 +667,17 @@
   }
 
   function submitOverlap() {
+    if (lockState.overlap) return;
     let correct = 0;
     activeData.overlap.items.forEach(item => { if (overlapPlacements[item.id] === item.target) correct++; });
     dailyScores.overlap = Math.round((correct / activeData.overlap.items.length) * 1000);
-    showModal(`OVERLAP RESULT:\n${correct} / ${activeData.overlap.items.length} cards placed correctly!\nScore: ${dailyScores.overlap} pts!`, "OVERLAP Evaluation");
-    saveTodayScore();
-    lockGameIfComplete();
+    showModal(`OVERLAP EVALUATION:\n${correct} / ${activeData.overlap.items.length} cards placed correctly!\nScore: ${dailyScores.overlap} pts!`, "OVERLAP Result");
+    
+    lockGame('overlap', dailyScores.overlap);
+    saveState();
   }
 
-  /* 3. CHAIN LOGIC */
+  /* 3. CHAIN LOGIC (NO DATES VISIBLE) */
   function initChain() {
     currentChain = [...activeData.chain.steps];
     renderChain();
@@ -649,7 +696,10 @@
       const n = document.createElement('div');
       n.className = 'chain-node';
       n.style.justifyContent = 'space-between';
-      n.innerHTML = `<span>${step.text}</span><div><button class="btn" onclick="moveChain(${idx},-1)">▲</button><button class="btn" onclick="moveChain(${idx},1)">▼</button></div>`;
+      n.innerHTML = `<span>${step.text}</span><div>
+        <button class="btn" ${lockState.chain ? 'disabled' : ''} onclick="moveChain(${idx},-1)">▲</button>
+        <button class="btn" ${lockState.chain ? 'disabled' : ''} onclick="moveChain(${idx},1)">▼</button>
+      </div>`;
       c.appendChild(n);
     });
 
@@ -660,6 +710,7 @@
   }
 
   function moveChain(idx, dir) {
+    if (lockState.chain) return;
     const next = idx + dir;
     if (next < 0 || next >= currentChain.length) return;
     [currentChain[idx], currentChain[next]] = [currentChain[next], currentChain[idx]];
@@ -667,65 +718,84 @@
   }
 
   function submitChain() {
+    if (lockState.chain) return;
     let ok = currentChain.every((s, i) => s.id === activeData.chain.steps[i].id);
     dailyScores.chain = ok ? 1000 : 0;
-    showModal(ok ? 'CHAIN VERIFIED!\nSequence correct (1,000 pts).' : 'SEQUENCE ERROR!\nIncorrect order (0 pts).', "CHAIN Evaluation");
-    saveTodayScore();
-    lockGameIfComplete();
+    showModal(ok ? 'CHAIN VERIFIED!\nSequence correct (1,000 pts).' : 'SEQUENCE ERROR!\nIncorrect order (0 pts).', "CHAIN Result");
+    
+    lockGame('chain', dailyScores.chain);
+    saveState();
   }
 
-  /* STORAGE & LOCK SYSTEM */
-  function saveTodayScore() {
-    const today = todayKey;
+  /* PER-GAME LOCKING & STORAGE MECHANICS */
+  function lockGame(gameKey, score) {
+    lockState[gameKey] = true;
+    dailyScores[gameKey] = score;
+
+    // Show lock notice & update score badge
+    document.getElementById(`lock-notice-${gameKey}`).style.display = 'block';
+    document.getElementById(`lock-score-${gameKey}`).innerText = score;
+    const badge = document.getElementById(`badge-${gameKey}`);
+    badge.innerText = `${score} pts`;
+    badge.classList.add('done');
+
+    // Disable controls specifically for this game
+    if (gameKey === 'pinpoint') {
+      document.getElementById('slider-target').disabled = true;
+      document.getElementById('slider-buffer').disabled = true;
+      document.getElementById('btn-submit-pinpoint').disabled = true;
+    } else if (gameKey === 'overlap') {
+      document.getElementById('btn-submit-overlap').disabled = true;
+      document.querySelectorAll('.draggable-card').forEach(c => {
+        c.draggable = false;
+        c.classList.add('locked-card');
+      });
+    } else if (gameKey === 'chain') {
+      document.getElementById('btn-submit-chain').disabled = true;
+      renderChain(); // re-renders buttons in disabled state
+    }
+
+    updateTotalScoreUI();
+  }
+
+  function saveState() {
+    let history = JSON.parse(localStorage.getItem('datum_puzzles_state') || '{}');
+    history[todayKey] = {
+      scores: dailyScores,
+      locks: lockState
+    };
+    localStorage.setItem('datum_puzzles_state', JSON.stringify(history));
+
+    // Save legacy total score for Task Manager performance graph
+    const total = (dailyScores.pinpoint || 0) + (dailyScores.overlap || 0) + (dailyScores.chain || 0);
+    let legacy = JSON.parse(localStorage.getItem('datum_scores') || '{}');
+    legacy[todayKey] = total;
+    localStorage.setItem('datum_scores', JSON.stringify(legacy));
+  }
+
+  function loadTodayState() {
+    let history = JSON.parse(localStorage.getItem('datum_puzzles_state') || '{}');
+    if (history[todayKey]) {
+      dailyScores = history[todayKey].scores || dailyScores;
+      lockState = history[todayKey].locks || lockState;
+    }
+  }
+
+  function applyLockStates() {
+    ['pinpoint', 'overlap', 'chain'].forEach(gameKey => {
+      if (lockState[gameKey]) {
+        lockGame(gameKey, dailyScores[gameKey] || 0);
+      }
+    });
+    updateTotalScoreUI();
+  }
+
+  function updateTotalScoreUI() {
     const p = dailyScores.pinpoint || 0;
     const o = dailyScores.overlap || 0;
     const c = dailyScores.chain || 0;
     const total = p + o + c;
 
-    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
-    history[today] = { pinpoint: p, overlap: o, chain: c, total: total };
-    localStorage.setItem('datum_scores_detail', JSON.stringify(history));
-
-    // Also legacy total for chart
-    let legacy = JSON.parse(localStorage.getItem('datum_scores') || '{}');
-    legacy[today] = total;
-    localStorage.setItem('datum_scores', JSON.stringify(legacy));
-
-    updatePercentileDisplay(total);
-  }
-
-  function loadScoreHistory() {
-    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
-    if (history[todayKey]) {
-      dailyScores = history[todayKey];
-      updatePercentileDisplay(dailyScores.total);
-    }
-  }
-
-  function checkIfCompleted() {
-    let history = JSON.parse(localStorage.getItem('datum_scores_detail') || '{}');
-    if (history[todayKey] && history[todayKey].pinpoint !== null && history[todayKey].overlap !== null && history[todayKey].chain !== null) {
-      lockEverything("You have already completed today's challenges.\nPlease return tomorrow for new challenges!");
-    }
-  }
-
-  function lockGameIfComplete() {
-    if (dailyScores.pinpoint !== null && dailyScores.overlap !== null && dailyScores.chain !== null) {
-      lockEverything("All daily challenges completed!\nPlease return tomorrow for new challenges.");
-    }
-  }
-
-  function lockEverything(message) {
-    document.getElementById('btn-submit-pinpoint').disabled = true;
-    document.getElementById('btn-submit-overlap').disabled = true;
-    document.getElementById('btn-submit-chain').disabled = true;
-
-    document.getElementById('pinpoint-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
-    document.getElementById('overlap-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
-    document.getElementById('chain-help').innerHTML = `<strong style="color: #b21a00;">[LOCKED]</strong> ${message}`;
-  }
-
-  function updatePercentileDisplay(total) {
     document.getElementById('stat-today-score').innerText = `${total} / 3000`;
     let pct = "Bottom 50%";
     if (total >= 2800) pct = "Top 3% (Optimal)";
@@ -739,6 +809,7 @@
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // Draw grid background
     ctx.strokeStyle = '#004400';
     ctx.lineWidth = 1;
     for (let x = 0; x < canvas.width; x += 30) {
