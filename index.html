@@ -48,7 +48,7 @@
 
     /* Main App Window */
     .window {
-      width: 700px; max-width: 95vw; background: var(--win-bg);
+      width: 720px; max-width: 95vw; background: var(--win-bg);
       border: 3px solid var(--win-blue); border-radius: 8px 8px 0 0;
       box-shadow: 6px 6px 20px rgba(0, 0, 0, 0.5);
       display: flex; flex-direction: column; overflow: hidden; z-index: 10;
@@ -134,9 +134,15 @@
     }
 
     /* 1. PINPOINT UI */
-    .pinpoint-display { text-align: center; margin: 15px 0; }
-    .pinpoint-val { font-size: 22px; font-weight: bold; color: var(--win-blue-dark); }
-    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .pinpoint-card {
+      border-bottom: 1px dashed #d0ccc0;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+    .pinpoint-card:last-child { border-bottom: none; margin-bottom: 0; }
+    .pinpoint-display { text-align: center; margin: 8px 0; }
+    .pinpoint-val { font-size: 18px; font-weight: bold; color: var(--win-blue-dark); }
+    .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
     .slider-row label { width: 120px; font-weight: bold; }
     input[type=range] { flex: 1; }
 
@@ -149,7 +155,7 @@
     }
 
     .draggable-card {
-      background: #ffffff; border: 1px solid #7f9db9; padding: 6px 12px;
+      background: #ffffff; border: 1px solid #7f9db9; padding: 5px 10px;
       border-radius: 3px; cursor: grab; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); font-weight: bold;
     }
 
@@ -157,7 +163,7 @@
 
     .venn-container {
       display: flex; justify-content: center; position: relative;
-      width: 100%; height: 210px; margin-top: 10px;
+      width: 100%; height: 230px; margin-top: 10px;
     }
 
     .drop-zone {
@@ -167,20 +173,20 @@
     }
 
     .drop-zone.drag-over { background: rgba(49, 106, 197, 0.2) !important; border-style: solid; }
-    .zone-a { width: 190px; height: 190px; left: 18%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
-    .zone-b { width: 190px; height: 190px; right: 18%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
+    .zone-a { width: 210px; height: 210px; left: 16%; background: rgba(255, 200, 200, 0.3); border-color: #d8432a; }
+    .zone-b { width: 210px; height: 210px; right: 16%; background: rgba(200, 200, 255, 0.3); border-color: #227bd6; }
     .zone-both {
-      width: 110px; height: 150px; left: calc(50% - 55px); top: 20px;
+      width: 120px; height: 160px; left: calc(50% - 60px); top: 25px;
       border-radius: 40%; background: rgba(200, 255, 200, 0.4); border-color: var(--xp-green); z-index: 2;
     }
 
     .zone-label { font-weight: bold; font-size: 10px; pointer-events: none; text-align: center; }
-    .zone-items { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; width: 100%; align-items: center; }
-    .zone-items .draggable-card { font-size: 9px; padding: 2px 6px; width: 90%; text-align: center; }
+    .zone-items { display: flex; flex-direction: column; gap: 3px; margin-top: 4px; width: 100%; align-items: center; }
+    .zone-items .draggable-card { font-size: 9px; padding: 2px 4px; width: 92%; text-align: center; }
 
     /* 3. CHAIN UI */
-    .chain-container { display: flex; flex-direction: column; gap: 8px; }
-    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 8px; border: 1px solid #ccc; border-radius: 3px; }
+    .chain-container { display: flex; flex-direction: column; gap: 6px; }
+    .chain-node { display: flex; align-items: center; gap: 8px; background: #f5f5f5; padding: 6px 10px; border: 1px solid #ccc; border-radius: 3px; }
     .chain-node.anchor { background: #e1edf9; border-color: #316ac5; font-weight: bold; }
 
     /* Performance Task Manager Chart */
@@ -282,8 +288,8 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.0.8\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
-      <div class="menu-item" onclick="showModal('1. PINPOINT: Target value + margin buffer.\n2. OVERLAP: Drag or click items into Venn diagram.\n3. CHAIN: Sequence steps chronologically without seeing dates.')">How to Play</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.0.9\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('1. PINPOINT: 5 Target value questions + margin buffers.\n2. OVERLAP: Sort 5 items into the Venn diagram.\n3. CHAIN: Sequence 5 intermediate steps chronologically without seeing dates.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
 
@@ -312,32 +318,14 @@
       <!-- GAME 1: PINPOINT -->
       <div id="game-pinpoint" class="game-panel">
         <div class="help-panel" id="pinpoint-help">
-          <strong>Goal:</strong> Choose a <strong>Target Value</strong> and set your <strong>Tolerance Buffer (&plusmn;)</strong>.<br>
-          If the answer falls inside your target buffer (from Target - Buffer to Target + Buffer), you score points. Tighter buffers yield up to <strong>1,000 pts</strong>!
+          <strong>Goal:</strong> Answer all 5 questions by setting a <strong>Target Value</strong> and a <strong>Tolerance Buffer (&plusmn;)</strong>.<br>
+          Catching the answer in a tight window scores up to <strong>200 pts per question</strong> (1,000 pts total max)!
         </div>
         <div class="group-box">
-          <div class="group-box-title">Target & Buffer Precision</div>
-          <p id="pinpoint-question" style="font-weight: bold; font-size: 12px; margin-bottom: 12px;"></p>
-          
-          <div class="pinpoint-display">
-            Target Guess: <span class="pinpoint-val" id="target-display">1975</span><br>
-            Accepted Window: <span id="window-display">1970 &mdash; 1980</span> (&plusmn;<span id="buffer-display">5</span>)<br>
-            <div style="margin-top: 6px; color: #555;">Est. Potential Payout: <strong id="payout-display">500</strong> pts</div>
-          </div>
-
-          <div style="padding: 0 15px;" id="pinpoint-controls">
-            <div class="slider-row">
-              <label>Target Value:</label>
-              <input type="range" id="slider-target" oninput="updatePinpointUI()">
-            </div>
-            <div class="slider-row">
-              <label>Tolerance Buffer (&plusmn;):</label>
-              <input type="range" id="slider-buffer" oninput="updatePinpointUI()">
-            </div>
-          </div>
-
+          <div class="group-box-title">5-Target Estimation Suite</div>
+          <div id="pinpoint-container"></div>
           <div style="text-align: center; margin-top: 15px;">
-            <button class="btn btn-primary" id="btn-submit-pinpoint" onclick="submitPinpoint()">Lock In Target</button>
+            <button class="btn btn-primary" id="btn-submit-pinpoint" onclick="submitPinpoint()">Lock In All 5 Targets</button>
           </div>
         </div>
       </div>
@@ -345,10 +333,10 @@
       <!-- GAME 2: OVERLAP -->
       <div id="game-overlap" class="game-panel" style="display: none;">
         <div class="help-panel" id="overlap-help">
-          <strong>Goal:</strong> Drag cards into the Venn diagram zones (or click a card to cycle through zones: Bank &rarr; A &rarr; Both &rarr; B &rarr; Bank).
+          <strong>Goal:</strong> Sort all 5 cards into the Venn diagram zones (Circle A, Circle B, or BOTH). Click a card to cycle zones or drag-and-drop.
         </div>
         <div class="group-box">
-          <div class="group-box-title">Venn Diagram Sorting</div>
+          <div class="group-box-title">5-Item Venn Sorting</div>
           <div class="overlap-board">
             <div class="card-deck" id="card-deck" ondragover="allowDrop(event)" ondrop="drop(event, 'deck')"></div>
 
@@ -376,10 +364,10 @@
       <!-- GAME 3: CHAIN -->
       <div id="game-chain" class="game-panel" style="display: none;">
         <div class="help-panel" id="chain-help">
-          <strong>Goal:</strong> Order the intermediate steps chronologically between the Start and End anchors using the ▲/▼ controls.
+          <strong>Goal:</strong> Order all 5 intermediate steps chronologically between Start and End anchors using the ▲/▼ buttons.
         </div>
         <div class="group-box">
-          <div class="group-box-title">Sequence Verification</div>
+          <div class="group-box-title">5-Step Sequence Verification</div>
           <div class="chain-container" id="chain-list"></div>
           <div style="text-align: center; margin-top: 15px;">
             <button class="btn btn-primary" id="btn-submit-chain" onclick="submitChain()">Verify Sequence</button>
@@ -433,13 +421,16 @@
 </div>
 
 <script>
-  // DAILY REPOSITORY WITH OCTOBER 11, 2026 CONTENT
+  // DAILY REPOSITORY WITH 5 ITEMS PER GAME FOR OCTOBER 11, 2026
   const DAILY_PUZZLES = {
     "2026-10-11": {
-      pinpoint: {
-        question: "In what year did the Concorde make its first commercial supersonic passenger flight?",
-        answer: 1976, min: 1960, max: 1995, maxBuffer: 15
-      },
+      pinpoint: [
+        { id: "p1", question: "1. Year Wright brothers made first powered flight at Kitty Hawk?", answer: 1903, min: 1890, max: 1925, maxBuffer: 10 },
+        { id: "p2", question: "2. Year Soviet Union launched Sputnik 1 satellite?", answer: 1957, min: 1945, max: 1970, maxBuffer: 10 },
+        { id: "p3", question: "3. Year Apollo 11 landed humans on the Moon?", answer: 1969, min: 1955, max: 1980, maxBuffer: 10 },
+        { id: "p4", question: "4. Year Concorde made its first commercial passenger flight?", answer: 1976, min: 1960, max: 1995, maxBuffer: 10 },
+        { id: "p5", question: "5. Year of the Chernobyl nuclear reactor accident?", answer: 1986, min: 1970, max: 2000, maxBuffer: 10 }
+      ],
       overlap: {
         categoryA: "Capital City",
         categoryB: "Located in Southern Hemisphere",
@@ -447,16 +438,19 @@
           { id: "1", text: "Canberra", target: "BOTH" },
           { id: "2", text: "Buenos Aires", target: "BOTH" },
           { id: "3", text: "Ottawa", target: "A" },
-          { id: "4", text: "Sydney", target: "B" }
+          { id: "4", text: "Sydney", target: "B" },
+          { id: "5", text: "Rio de Janeiro", target: "B" }
         ]
       },
       chain: {
-        startAnchor: "ENIAC completed at the University of Pennsylvania",
-        endAnchor: "Microsoft Windows 1.0 officially released",
+        startAnchor: "ENIAC completed at University of Pennsylvania",
+        endAnchor: "World Wide Web made publicly available",
         steps: [
-          { id: "s1", text: "UNIVAC I delivered to the US Census Bureau" },
+          { id: "s1", text: "UNIVAC I delivered to US Census Bureau" },
           { id: "s2", text: "FORTRAN programming language developed by IBM" },
-          { id: "s3", text: "First computer mouse demonstrated by Douglas Engelbart" }
+          { id: "s3", text: "First computer mouse demonstrated by Douglas Engelbart" },
+          { id: "s4", text: "Apple Computer Inc. officially incorporated" },
+          { id: "s5", text: "Microsoft Windows 1.0 officially released" }
         ]
       }
     }
@@ -529,50 +523,66 @@
     }
   }
 
-  /* 1. PINPOINT LOGIC */
+  /* 1. PINPOINT LOGIC (5 Questions) */
   function initPinpoint() {
-    const data = activeData.pinpoint;
-    document.getElementById('pinpoint-question').innerText = data.question;
+    const container = document.getElementById('pinpoint-container');
+    container.innerHTML = '';
 
-    const sTarget = document.getElementById('slider-target');
-    const sBuffer = document.getElementById('slider-buffer');
-
-    sTarget.min = data.min; sTarget.max = data.max; sTarget.value = Math.floor((data.min + data.max) / 2);
-    sBuffer.min = 0; sBuffer.max = data.maxBuffer; sBuffer.value = Math.floor(data.maxBuffer / 2);
-
-    updatePinpointUI();
+    activeData.pinpoint.forEach((q, idx) => {
+      const card = document.createElement('div');
+      card.className = 'pinpoint-card';
+      card.innerHTML = `
+        <p style="font-weight: bold; margin: 4px 0;">${q.question}</p>
+        <div class="pinpoint-display">
+          Target: <span class="pinpoint-val" id="target-disp-${idx}">${Math.floor((q.min + q.max)/2)}</span> | 
+          Window: <span id="window-disp-${idx}">${Math.floor((q.min + q.max)/2) - 5} &mdash; ${Math.floor((q.min + q.max)/2) + 5}</span> (&plusmn;<span id="buffer-disp-${idx}">5</span>)
+        </div>
+        <div class="slider-row">
+          <label>Target Value:</label>
+          <input type="range" id="target-slider-${idx}" min="${q.min}" max="${q.max}" value="${Math.floor((q.min + q.max)/2)}" oninput="updatePinpointCardUI(${idx})">
+        </div>
+        <div class="slider-row">
+          <label>Tolerance (&plusmn;):</label>
+          <input type="range" id="buffer-slider-${idx}" min="0" max="${q.maxBuffer}" value="5" oninput="updatePinpointCardUI(${idx})">
+        </div>
+      `;
+      container.appendChild(card);
+    });
   }
 
-  function updatePinpointUI() {
-    const target = parseInt(document.getElementById('slider-target').value);
-    const buffer = parseInt(document.getElementById('slider-buffer').value);
-    const maxBuffer = activeData.pinpoint.maxBuffer;
+  function updatePinpointCardUI(idx) {
+    const t = parseInt(document.getElementById(`target-slider-${idx}`).value);
+    const b = parseInt(document.getElementById(`buffer-slider-${idx}`).value);
 
-    document.getElementById('target-display').innerText = target;
-    document.getElementById('buffer-display').innerText = buffer;
-    document.getElementById('window-display').innerText = `${target - buffer} — ${target + buffer}`;
-
-    const potential = Math.round(1000 * (1 - (buffer / (maxBuffer + 1))));
-    document.getElementById('payout-display').innerText = potential;
+    document.getElementById(`target-disp-${idx}`).innerText = t;
+    document.getElementById(`buffer-disp-${idx}`).innerText = b;
+    document.getElementById(`window-disp-${idx}`).innerText = `${t - b} — ${t + b}`;
   }
 
   function submitPinpoint() {
-    const target = parseInt(document.getElementById('slider-target').value);
-    const buffer = parseInt(document.getElementById('slider-buffer').value);
-    const answer = activeData.pinpoint.answer;
+    let totalScore = 0;
+    let resultsText = "";
 
-    if (Math.abs(answer - target) <= buffer) {
-      dailyScores.pinpoint = Math.round(1000 * (1 - (buffer / (activeData.pinpoint.maxBuffer + 1))));
-      showModal(`BULLSEYE!\nSecret answer was ${answer}.\nScore: ${dailyScores.pinpoint} pts!`, "PINPOINT Result");
-    } else {
-      dailyScores.pinpoint = 0;
-      showModal(`MISSED!\nSecret answer was ${answer}.\nScore: 0 pts.`, "PINPOINT Result");
-    }
+    activeData.pinpoint.forEach((q, idx) => {
+      const t = parseInt(document.getElementById(`target-slider-${idx}`).value);
+      const b = parseInt(document.getElementById(`buffer-slider-${idx}`).value);
+
+      if (Math.abs(q.answer - t) <= b) {
+        let pts = Math.round(200 * (1 - (b / (q.maxBuffer + 1))));
+        totalScore += pts;
+        resultsText += `Q${idx+1}: HIT (${pts} pts)\n`;
+      } else {
+        resultsText += `Q${idx+1}: MISSED (${q.answer})\n`;
+      }
+    });
+
+    dailyScores.pinpoint = totalScore;
+    showModal(`PINPOINT RESULTS:\n\n${resultsText}\nTotal Score: ${totalScore} / 1000 pts`, "PINPOINT Evaluation");
     saveTodayScore();
     lockSingleGame('pinpoint', dailyScores.pinpoint);
   }
 
-  /* 2. OVERLAP LOGIC */
+  /* 2. OVERLAP LOGIC (5 Cards) */
   function initOverlap() {
     document.getElementById('label-A').innerText = activeData.overlap.categoryA;
     document.getElementById('label-B').innerText = activeData.overlap.categoryB;
@@ -594,7 +604,7 @@
 
   const zoneSequence = ['deck', 'A', 'BOTH', 'B'];
   function cycleCardZone(itemId) {
-    if (dailyScores.overlap !== null) return; // Locked
+    if (dailyScores.overlap !== null) return;
     const currentZone = overlapPlacements[itemId];
     const nextIdx = (zoneSequence.indexOf(currentZone) + 1) % zoneSequence.length;
     moveCardToZone(itemId, zoneSequence[nextIdx]);
@@ -616,7 +626,7 @@
 
   function drop(e, zone) {
     e.preventDefault();
-    if (dailyScores.overlap !== null) return; // Locked
+    if (dailyScores.overlap !== null) return;
     if (e.currentTarget.classList.contains('drop-zone')) e.currentTarget.classList.remove('drag-over');
     const id = e.dataTransfer.getData('text/plain');
     if (id) moveCardToZone(id, zone);
@@ -631,7 +641,7 @@
     lockSingleGame('overlap', dailyScores.overlap);
   }
 
-  /* 3. CHAIN LOGIC */
+  /* 3. CHAIN LOGIC (5 Steps) */
   function initChain() {
     currentChain = [...activeData.chain.steps];
     renderChain();
@@ -661,7 +671,7 @@
   }
 
   function moveChain(idx, dir) {
-    if (dailyScores.chain !== null) return; // Locked
+    if (dailyScores.chain !== null) return;
     const next = idx + dir;
     if (next < 0 || next >= currentChain.length) return;
     [currentChain[idx], currentChain[next]] = [currentChain[next], currentChain[idx]];
@@ -669,9 +679,11 @@
   }
 
   function submitChain() {
-    let ok = currentChain.every((s, i) => s.id === activeData.chain.steps[i].id);
-    dailyScores.chain = ok ? 1000 : 0;
-    showModal(ok ? 'CHAIN VERIFIED!\nSequence correct (1,000 pts).' : 'SEQUENCE ERROR!\nIncorrect order (0 pts).', "CHAIN Evaluation");
+    let correctCount = 0;
+    currentChain.forEach((s, i) => { if (s.id === activeData.chain.steps[i].id) correctCount++; });
+    let pts = Math.round((correctCount / activeData.chain.steps.length) * 1000);
+    dailyScores.chain = pts;
+    showModal(`CHAIN RESULT:\n${correctCount} / ${activeData.chain.steps.length} steps in exact order.\nScore: ${pts} pts!`, "CHAIN Evaluation");
     saveTodayScore();
     lockSingleGame('chain', dailyScores.chain);
   }
@@ -716,7 +728,11 @@
     if (help) {
       help.innerHTML = `<strong style="color: #b21a00;">[COMPLETED]</strong> Score: ${score} pts. Please return tomorrow at Midnight UTC for new challenges!`;
     }
-    if (gameKey === 'chain') renderChain(); // Re-render to disable ▲/▼ buttons
+    if (gameKey === 'pinpoint') {
+      const inputs = document.querySelectorAll('#pinpoint-container input');
+      inputs.forEach(i => i.disabled = true);
+    }
+    if (gameKey === 'chain') renderChain();
   }
 
   function updatePercentileDisplay(total) {
