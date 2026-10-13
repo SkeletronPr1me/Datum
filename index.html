@@ -288,7 +288,7 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.0.9\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.1.0\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
       <div class="menu-item" onclick="showModal('1. PINPOINT: 5 Target value questions + margin buffers.\n2. OVERLAP: Sort 5 items into the Venn diagram.\n3. CHAIN: Sequence 5 intermediate steps chronologically without seeing dates.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
@@ -421,43 +421,42 @@
 </div>
 
 <script>
-  // DAILY REPOSITORY WITH 5 ITEMS PER GAME FOR OCTOBER 11, 2026
+  // DAILY REPOSITORY WITH OCTOBER 13, 2026 CONTENT (5 ITEMS EACH)
   const DAILY_PUZZLES = {
-    "2026-10-11": {
+    "2026-10-13": {
       pinpoint: [
-        { id: "p1", question: "1. Year Wright brothers made first powered flight at Kitty Hawk?", answer: 1903, min: 1890, max: 1925, maxBuffer: 10 },
-        { id: "p2", question: "2. Year Soviet Union launched Sputnik 1 satellite?", answer: 1957, min: 1945, max: 1970, maxBuffer: 10 },
-        { id: "p3", question: "3. Year Apollo 11 landed humans on the Moon?", answer: 1969, min: 1955, max: 1980, maxBuffer: 10 },
-        { id: "p4", question: "4. Year Concorde made its first commercial passenger flight?", answer: 1976, min: 1960, max: 1995, maxBuffer: 10 },
-        { id: "p5", question: "5. Year of the Chernobyl nuclear reactor accident?", answer: 1986, min: 1970, max: 2000, maxBuffer: 10 }
+        { id: "p1", question: "1. Year NASA's Voyager 2 spacecraft flew past Neptune?", answer: 1989, min: 1975, max: 2005, maxBuffer: 10 },
+        { id: "p2", question: "2. Year Hubble Space Telescope was launched into orbit?", answer: 1990, min: 1975, max: 2005, maxBuffer: 10 },
+        { id: "p3", question: "3. Year Mars Pathfinder landed the Sojourner rover?", answer: 1997, min: 1980, max: 2010, maxBuffer: 10 },
+        { id: "p4", question: "4. Year International Space Station received its first permanent crew?", answer: 2000, min: 1985, max: 2015, maxBuffer: 10 },
+        { id: "p5", question: "5. Year James Webb Space Telescope successfully launched?", answer: 2021, min: 2005, max: 2025, maxBuffer: 10 }
       ],
       overlap: {
-        categoryA: "Capital City",
-        categoryB: "Located in Southern Hemisphere",
+        categoryA: "Member of the G7",
+        categoryB: "Located in Europe",
         items: [
-          { id: "1", text: "Canberra", target: "BOTH" },
-          { id: "2", text: "Buenos Aires", target: "BOTH" },
-          { id: "3", text: "Ottawa", target: "A" },
-          { id: "4", text: "Sydney", target: "B" },
-          { id: "5", text: "Rio de Janeiro", target: "B" }
+          { id: "1", text: "Germany", target: "BOTH" },
+          { id: "2", text: "Japan", target: "A" },
+          { id: "3", text: "Italy", target: "BOTH" },
+          { id: "4", text: "Brazil", target: "deck" },
+          { id: "5", text: "Spain", target: "B" }
         ]
       },
       chain: {
-        startAnchor: "ENIAC completed at University of Pennsylvania",
-        endAnchor: "World Wide Web made publicly available",
+        startAnchor: "Release of the first feature-length fully computer-animated film (Toy Story)",
+        endAnchor: "Release of Oppenheimer using practical nuclear blast effects",
         steps: [
-          { id: "s1", text: "UNIVAC I delivered to US Census Bureau" },
-          { id: "s2", text: "FORTRAN programming language developed by IBM" },
-          { id: "s3", text: "First computer mouse demonstrated by Douglas Engelbart" },
-          { id: "s4", text: "Apple Computer Inc. officially incorporated" },
-          { id: "s5", text: "Microsoft Windows 1.0 officially released" }
+          { id: "s1", text: "Release of the first Star Wars movie (A New Hope)" },
+          { id: "s2", text: "Release of Jurassic Park utilizing pioneering CGI dinosaurs" },
+          { id: "s3", text: "Release of The Matrix and its groundbreaking bullet-time visual effects" },
+          { id: "s4", text: "Release of Avatar, pushing digital 3D and motion capture performance" }
         ]
       }
     }
   };
 
   const todayKey = new Date().toISOString().split('T')[0];
-  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-11"];
+  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-13"];
 
   let overlapPlacements = {};
   let currentChain = [];
