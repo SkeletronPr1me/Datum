@@ -288,7 +288,7 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.1.1\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.1.2\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
       <div class="menu-item" onclick="showModal('1. PINPOINT: 5 Target value questions + margin buffers.\n2. OVERLAP: Sort 5 items into the Venn diagram.\n3. CHAIN: Sequence 5 intermediate steps chronologically without seeing dates.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
@@ -421,42 +421,42 @@
 </div>
 
 <script>
-  // DAILY REPOSITORY WITH OCTOBER 14, 2026 CONTENT (5 ITEMS EACH)
+  // DAILY REPOSITORY WITH OCTOBER 15, 2026 CONTENT (5 ITEMS EACH)
   const DAILY_PUZZLES = {
-    "2026-10-14": {
+    "2026-10-15": {
       pinpoint: [
-        { id: "p1", question: "1. Year the Wright brothers achieved powered flight?", answer: 1903, min: 1890, max: 1920, maxBuffer: 10 },
-        { id: "p2", question: "2. Year the Ford Model T was first introduced?", answer: 1908, min: 1895, max: 1925, maxBuffer: 10 },
-        { id: "p3", question: "3. Year the Boeing 747 jumbo jet made its maiden flight?", answer: 1969, min: 1950, max: 1985, maxBuffer: 10 },
-        { id: "p4", question: "4. Year the first Toyota Prius hybrid went on sale in Japan?", answer: 1997, min: 1980, max: 2010, maxBuffer: 10 },
-        { id: "p5", question: "5. Year the first mass-market modern electric Tesla Roadster was delivered?", answer: 2008, min: 1995, max: 2020, maxBuffer: 10 }
+        { id: "p1", question: "1. Year the Eiffel Tower was completed for the World's Fair?", answer: 1889, min: 1870, max: 1910, maxBuffer: 10 },
+        { id: "p2", question: "2. Year the Empire State Building opened in New York City?", answer: 1931, min: 1915, max: 1945, maxBuffer: 10 },
+        { id: "p3", question: "3. Year the Sydney Opera House was officially opened?", answer: 1973, min: 1955, max: 1990, maxBuffer: 10 },
+        { id: "p4", question: "4. Year the Channel Tunnel connecting the UK and France opened?", answer: 1994, min: 1980, max: 2010, maxBuffer: 10 },
+        { id: "p5", question: "5. Year the Burj Khalifa officially opened in Dubai?", answer: 2010, min: 1995, max: 2025, maxBuffer: 10 }
       ],
       overlap: {
-        categoryA: "Bordering Germany",
-        categoryB: "Member of the European Union",
+        categoryA: "Hosted a Summer Olympic Games",
+        categoryB: "Located in North America",
         items: [
-          { id: "1", text: "France", target: "BOTH" },
-          { id: "2", text: "Switzerland", target: "A" },
-          { id: "3", text: "Austria", target: "BOTH" },
-          { id: "4", text: "Norway", target: "deck" },
-          { id: "5", text: "Sweden", target: "B" }
+          { id: "1", text: "Los Angeles", target: "BOTH" },
+          { id: "2", text: "Tokyo", target: "A" },
+          { id: "3", text: "Montreal", target: "BOTH" },
+          { id: "4", text: "Cairo", target: "deck" },
+          { id: "5", text: "Vancouver", target: "B" }
         ]
       },
       chain: {
-        startAnchor: "First archaeological evidence of beer and barley wine production in ancient Sumer",
-        endAnchor: "Mainstream commercialization of refrigerated liquid yeast packets for craft microbreweries",
+        startAnchor: "Eratosthenes calculates the circumference of the Earth using shadows and wells",
+        endAnchor: "Global deployment of real-time interactive digital web mapping libraries and vector tiles",
         steps: [
-          { id: "s1", text: "Invention of active dry baker's yeast for standardized home baking" },
-          { id: "s2", text: "Louis Pasteur publishes Études sur la Bière, proving yeast causes alcoholic fermentation" },
-          { id: "s3", text: "Emil Christian Hansen isolates a pure single-cell yeast culture for brewing lagers at Carlsberg" },
-          { id: "s4", text: "Development of modern commercial sourdough starter preservation and rapid-rise yeast strains" }
+          { id: "s1", text: "Ptolemy publishes Geographia, introducing coordinate systems of latitude and longitude" },
+          { id: "s2", text: "Gerardus Mercator publishes his revolutionary cylindrical map projection for marine navigation" },
+          { id: "s3", text: "John Harrison invents the marine chronometer, solving the longitude problem at sea" },
+          { id: "s4", text: "Launch of the first GPS satellite, laying the foundation for modern digital satellite mapping" }
         ]
       }
     }
   };
 
   const todayKey = new Date().toISOString().split('T')[0];
-  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-14"];
+  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-15"];
 
   let overlapPlacements = {};
   let currentChain = [];
