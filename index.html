@@ -288,7 +288,7 @@
     </div>
 
     <div class="menu-bar">
-      <div class="menu-item" onclick="showModal('DATUM v1.1.2\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
+      <div class="menu-item" onclick="showModal('DATUM v1.1.3\nDaily Puzzle Engine\nResets daily at Midnight UTC.')">File</div>
       <div class="menu-item" onclick="showModal('1. PINPOINT: 5 Target value questions + margin buffers.\n2. OVERLAP: Sort 5 items into the Venn diagram.\n3. CHAIN: Sequence 5 intermediate steps chronologically without seeing dates.')">How to Play</div>
       <div class="menu-item sponsor-btn" onclick="openSponsorModal()">💖 Sponsor Project</div>
     </div>
@@ -421,42 +421,42 @@
 </div>
 
 <script>
-  // DAILY REPOSITORY WITH OCTOBER 15, 2026 CONTENT (5 ITEMS EACH)
+  // DAILY REPOSITORY WITH OCTOBER 17, 2026 CONTENT (5 ITEMS EACH)
   const DAILY_PUZZLES = {
-    "2026-10-15": {
+    "2026-10-17": {
       pinpoint: [
-        { id: "p1", question: "1. Year the Eiffel Tower was completed for the World's Fair?", answer: 1889, min: 1870, max: 1910, maxBuffer: 10 },
-        { id: "p2", question: "2. Year the Empire State Building opened in New York City?", answer: 1931, min: 1915, max: 1945, maxBuffer: 10 },
-        { id: "p3", question: "3. Year the Sydney Opera House was officially opened?", answer: 1973, min: 1955, max: 1990, maxBuffer: 10 },
-        { id: "p4", question: "4. Year the Channel Tunnel connecting the UK and France opened?", answer: 1994, min: 1980, max: 2010, maxBuffer: 10 },
-        { id: "p5", question: "5. Year the Burj Khalifa officially opened in Dubai?", answer: 2010, min: 1995, max: 2025, maxBuffer: 10 }
+        { id: "p1", question: "1. Year penicillin was discovered by Alexander Fleming?", answer: 1928, min: 1910, max: 1945, maxBuffer: 10 },
+        { id: "p2", question: "2. Year the first programmable electronic computer (ENIAC) was completed?", answer: 1946, min: 1930, max: 1960, maxBuffer: 10 },
+        { id: "p3", question: "3. Year DNA double helix structure was discovered by Watson and Crick?", answer: 1953, min: 1935, max: 1970, maxBuffer: 10 },
+        { id: "p4", question: "4. Year the first successful human heart transplant was performed?", answer: 1967, min: 1950, max: 1985, maxBuffer: 10 },
+        { id: "p5", question: "5. Year the World Wide Web was invented by Tim Berners-Lee at CERN?", answer: 1989, min: 1975, max: 2005, maxBuffer: 10 }
       ],
       overlap: {
-        categoryA: "Hosted a Summer Olympic Games",
-        categoryB: "Located in North America",
+        categoryA: "Member of the UN Security Council (Permanent 5)",
+        categoryB: "Nuclear-Weapon State under the NPT",
         items: [
-          { id: "1", text: "Los Angeles", target: "BOTH" },
-          { id: "2", text: "Tokyo", target: "A" },
-          { id: "3", text: "Montreal", target: "BOTH" },
-          { id: "4", text: "Cairo", target: "deck" },
-          { id: "5", text: "Vancouver", target: "B" }
+          { id: "1", text: "United States", target: "BOTH" },
+          { id: "2", text: "India", target: "B" },
+          { id: "3", text: "France", target: "BOTH" },
+          { id: "4", text: "Germany", target: "deck" },
+          { id: "5", text: "China", target: "BOTH" }
         ]
       },
       chain: {
-        startAnchor: "Eratosthenes calculates the circumference of the Earth using shadows and wells",
-        endAnchor: "Global deployment of real-time interactive digital web mapping libraries and vector tiles",
+        startAnchor: "Samuel Morse sends the first official telegraph message ('What hath God wrought?')",
+        endAnchor: "Commercial deployment of 5G cellular wireless networks worldwide",
         steps: [
-          { id: "s1", text: "Ptolemy publishes Geographia, introducing coordinate systems of latitude and longitude" },
-          { id: "s2", text: "Gerardus Mercator publishes his revolutionary cylindrical map projection for marine navigation" },
-          { id: "s3", text: "John Harrison invents the marine chronometer, solving the longitude problem at sea" },
-          { id: "s4", text: "Launch of the first GPS satellite, laying the foundation for modern digital satellite mapping" }
+          { id: "s1", text: "Alexander Graham Bell successfully transmits speech electrically through his telephone" },
+          { id: "s2", text: "Guglielmo Marconi achieves the first transatlantic radio telegraph message" },
+          { id: "s3", text: "ARPANET connects its first four foundational node computers together" },
+          { id: "s4", text: "Ray Tomlinson invents network email and introduces the '@' symbol for addressing" }
         ]
       }
     }
   };
 
   const todayKey = new Date().toISOString().split('T')[0];
-  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-15"];
+  const activeData = DAILY_PUZZLES[todayKey] || DAILY_PUZZLES["2026-10-17"];
 
   let overlapPlacements = {};
   let currentChain = [];
